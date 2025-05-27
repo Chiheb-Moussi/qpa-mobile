@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Police Qatar App",
+    "slug": "police-quatar-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.policeqatar.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.policeqatar.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fonts": [
+            {
+              "asset": "./assets/fonts/Cairo-Regular.ttf",
+              "fontFamily": "Cairo-Regular"
+            },
+            {
+              "asset": "./assets/fonts/Cairo-Bold.ttf",
+              "fontFamily": "Cairo-Bold"
+            },
+            {
+              "asset": "./assets/fonts/Cairo-SemiBold.ttf",
+              "fontFamily": "Cairo-SemiBold"
+            }
+          ]
+        }
+      ]
+    ],
+    "sdkVersion": "53.0.0"
+  }
+}
