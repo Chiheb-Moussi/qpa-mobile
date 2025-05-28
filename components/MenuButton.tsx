@@ -70,17 +70,17 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   iconContainer: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#f5f5f5",
-    borderRadius: 25,
-    marginBottom: 5,
+    borderRadius: 30,
+    marginBottom: 8,
   },
   icon: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
   },
   title: {
     fontFamily: "Cairo-Regular",

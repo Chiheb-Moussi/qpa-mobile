@@ -26,27 +26,25 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      [
-        "expo-font",
-        {
-          "fonts": [
-            {
-              "asset": "./assets/fonts/Cairo-Regular.ttf",
-              "fontFamily": "Cairo-Regular"
-            },
-            {
-              "asset": "./assets/fonts/Cairo-Bold.ttf",
-              "fontFamily": "Cairo-Bold"
-            },
-            {
-              "asset": "./assets/fonts/Cairo-SemiBold.ttf",
-              "fontFamily": "Cairo-SemiBold"
-            }
-          ]
+  "plugins": [
+  [
+    "expo-font",
+    {
+      "fontDefinitions": {
+        "Cairo-Regular": {
+          "asset": "./assets/fonts/Cairo-Regular.ttf"
+        },
+        "Cairo-Bold": {
+          "asset": "./assets/fonts/Cairo-Bold.ttf"
+        },
+        "Cairo-SemiBold": {
+          "asset": "./assets/fonts/Cairo-SemiBold.ttf"
         }
-      ]
-    ],
+      }
+    }
+  ]
+],
+
     "sdkVersion": "53.0.0"
   }
 }
