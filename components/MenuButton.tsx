@@ -55,7 +55,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({ title, icon, onPress, isSelecte
         <Text 
           style={[styles.title, isSelected && styles.selectedTitle, RTLStyles]} 
           numberOfLines={1}
-          minimumFontSize={9}
+          minimumFontScale={0.9}
         >
           {title}
         </Text>
@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   icon: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     alignSelf: "center",
   },
   titleContainer: {

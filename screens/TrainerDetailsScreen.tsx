@@ -194,34 +194,7 @@ const TrainerDetailsScreen = () => {
             },
           ]}
         >
-          <View style={styles.profileInfo}>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.name}</Text>
-              <Text style={styles.infoLabel}>:الإسم</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.nationality}</Text>
-              <Text style={styles.infoLabel}>:الجنسية</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.position}</Text>
-              <Text style={styles.infoLabel}>:المسمى الوظيفي</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.militaryId}</Text>
-              <Text style={styles.infoLabel}>:الرقم العسكري</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.birthDate}</Text>
-              <Text style={styles.infoLabel}>:تاريخ الميلاد</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.appointmentDate}</Text>
-              <Text style={styles.infoLabel}>:تاريخ التعيين</Text>
-            </View>
-          </View>
-
-          <View style={styles.imageContainer}>
+            <View style={styles.imageContainer}>
             <Image source={trainerData.image} style={styles.trainerImage} />
             <Text style={styles.specialization}>{trainerData.specialization}</Text>
             <View style={styles.experienceContainer}>
@@ -229,6 +202,37 @@ const TrainerDetailsScreen = () => {
               <Text style={styles.experienceLabel}>سنة الخبرة</Text>
             </View>
           </View>
+          <View style={styles.profileInfo}>
+          <View style={styles.infoRow}>
+          <Text style={styles.infoValue}>{trainerData.name}</Text>
+          <Text style={styles.infoLabel}> الإسم:</Text></View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoValue}>{trainerData.nationality}</Text>
+              <Text style={styles.infoLabel}>الجنسية:</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoValue}>{trainerData.position}</Text>
+              <Text style={styles.infoLabel}>المسمى الوظيفي:</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoValue}>{trainerData.militaryId}</Text>
+              <Text style={styles.infoLabel}>الرقم العسكري:</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoValue}>{trainerData.birthDate}</Text>
+              <Text style={styles.infoLabel}>تاريخ الميلاد:</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoValue}>{trainerData.appointmentDate}</Text>
+              <Text style={styles.infoLabel}>تاريخ التعيين:</Text>
+            </View>
+          </View>
+
+        
+
+
+
+        
         </Animated.View>
 
         <View style={styles.contactRow}>
@@ -361,7 +365,7 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     flex: 2,
-    paddingRight: 10,
+    paddingRight: 5,
   },
   infoRow: {
     flexDirection: "row",
@@ -567,6 +571,10 @@ const styles = StyleSheet.create({
   },
   evaluationsContainer: {
     padding: 16,
+  },
+  rtlText: {
+    textAlign: 'right',
+    writingDirection: 'rtl',
   },
 })
 

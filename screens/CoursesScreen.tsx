@@ -118,30 +118,27 @@ const CoursesScreen = () => {
       <Header title="الواجهة" showBackButton />
 
       <View style={styles.menuContainer}>
-      <MenuButton
+        <MenuButton
           title="الدورات"
           icon={require("../assets/images/search.png")}
           onPress={() => handleMenuPress("courses")}
           isSelected={true}
         />
-          <MenuButton
+        <MenuButton
           title="سرايا العروض العسكرية"
           icon={require("../assets/images/police.png")}
           onPress={() => handleMenuPress("military")}
         />
-          <MenuButton
+        <MenuButton
           title="طلبة الدبلوم"
           icon={require("../assets/images/students-icon.png")}
           onPress={() => handleMenuPress("students")}
         />
-        
         <MenuButton
           title="المدربين"
           icon={require("../assets/images/trainers-icon.png")}
           onPress={() => handleMenuPress("trainers")}
         />
-      
-      
       </View>
 
       <ScrollView style={styles.scrollView}>
@@ -149,27 +146,49 @@ const CoursesScreen = () => {
           <View style={styles.blueCard}>
             <Text style={styles.title}>رزنامة الدورات</Text>
 
-            <View style={styles.tableHeader}>
-              <Text style={styles.headerCell}>برنامج الدورة</Text>
-              <Text style={styles.headerCell}>مدة الدورة</Text>
-              <Text style={styles.headerCell}>حالة الدورة</Text>
-              <Text style={styles.headerCell}>تاريخ الدورة</Text>
-              <Text style={styles.headerCell}>اسم الدورة</Text>
-            </View>
+            <View style={styles.tableContainer}>
+            
 
-            {courses.map((course, index) => (
-              <TouchableOpacity
-                key={course.id}
-                style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : {}]}
-                onPress={() => handleCoursePress(course)}
-              >
-                <Text style={styles.cell}>{course.program}</Text>
-                <Text style={styles.cell}>{course.duration}</Text>
-                <Text style={[styles.cell, styles.statusCell]}>{course.status}</Text>
-                <Text style={styles.cell}>{course.date}</Text>
-                <Text style={styles.cell}>{course.name}</Text>
-              </TouchableOpacity>
-            ))}
+              {/* Colonnes scrollables */}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View>
+                  <View style={styles.tableHeader}>
+                    <Text style={styles.headerCell}>برنامج الدورة</Text>
+                    <Text style={styles.headerCell}>مدة الدورة</Text>
+                    <Text style={styles.headerCell}>حالة الدورة</Text>
+                    <Text style={styles.headerCell}>تاريخ الدورة</Text>
+                  </View>
+
+                  {courses.map((course, index) => (
+                    <TouchableOpacity
+                      key={course.id}
+                      style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : {}]}
+                      onPress={() => handleCoursePress(course)}
+                    >
+                      <Text style={styles.cell}>{course.program}</Text>
+                      <Text style={styles.cell}>{course.duration}</Text>
+                      <Text style={[styles.cell, styles.statusCell]}>{course.status}</Text>
+                      <Text style={styles.cell}>{course.date}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </ScrollView>
+                {/* Colonne fixe */}
+                <View style={styles.fixedColumn}>
+                <Text style={[styles.headerCell, styles.fixedHeaderCell]}>اسم الدورة</Text>
+                {courses.map((course, index) => (
+                  <TouchableOpacity
+                    key={course.id}
+                    style={[styles.fixedCell, index % 2 === 0 ? styles.evenRow : {}]}
+                    onPress={() => handleCoursePress(course)}
+                  >
+                    <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">
+                      {course.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
           </View>
         </Animated.View>
       </ScrollView>
@@ -221,6 +240,27 @@ const styles = StyleSheet.create({
     textAlign: "right",
     marginBottom: 15,
   },
+  tableContainer: {
+    flexDirection: "row",
+  },
+  fixedColumn: {
+    width: 150,
+    borderRightWidth: 1,
+    borderRightColor: "rgba(255, 255, 255, 0.3)",
+  },
+  fixedHeaderCell: {
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.3)",
+    paddingBottom: 10,
+    textAlign: 'right', 
+    writingDirection: 'rtl' 
+  },
+  fixedCell: {
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.1)",
+  },
   tableHeader: {
     flexDirection: "row",
     borderBottomWidth: 1,
@@ -228,7 +268,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   headerCell: {
-    flex: 1,
+    width: 120,
     color: "white",
     fontFamily: "Cairo-Bold",
     fontSize: 14,
@@ -245,7 +285,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.05)",
   },
   cell: {
-    flex: 1,
+    width: 120,
     color: "white",
     fontFamily: "Cairo-Regular",
     fontSize: 12,
