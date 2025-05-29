@@ -27,11 +27,18 @@ type Props = {
   size?: number;
 };
 
-const QatarFlag = ({ size = 40 }: Props) => {
+const QatarFlag = ({ size = 20 }: Props) => {
   return (
     <Image
       source={require("../assets/images/qatar-flag.png")}
-      style={{ width: size, height: size, resizeMode: "contain" }}
+      style={[
+        styles.flag,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+        },
+      ]}
     />
   );
 };
@@ -185,7 +192,7 @@ const QatarFlag = ({ size = 40 }: Props) => {
         </Animated.View>
       </Animated.ScrollView>
 
-      <QatarFlag size={50} />
+      <QatarFlag size={30} />
     </SafeAreaView>
   )
 }
@@ -197,6 +204,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  flag: {
+    resizeMode: "cover", // "cover" est mieux que "contain" pour remplir un cercle
+    backgroundColor: "transparent", // s'assure qu'il n'y a pas de fond
   },
   menuContainer: {
     flexDirection: "row",

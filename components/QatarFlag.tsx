@@ -9,7 +9,7 @@ interface QatarFlagProps {
   size?: number
 }
 
-const QatarFlag: React.FC<QatarFlagProps> = ({ size = 40 }) => {
+const QatarFlag: React.FC<QatarFlagProps> = ({ size = 60 }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current
 
   useEffect(() => {
@@ -38,16 +38,25 @@ const QatarFlag: React.FC<QatarFlagProps> = ({ size = 40 }) => {
     <View style={styles.container}>
       <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
         <TouchableOpacity activeOpacity={0.7}>
-          <Image
-            source={require("../assets/images/qatar-flag.png")}
-            style={[styles.flag, { width: size, height: size }]}
-            resizeMode="contain"
-          />
+        <Image
+      source={require("../assets/images/qatar-flag.png")}
+      style={[
+        styles.flag,
+        {
+          width: size/2,
+          height: size/2,
+          borderRadius: size / 2,
+        },
+      ]}
+    />
         </TouchableOpacity>
       </Animated.View>
     </View>
   )
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -56,13 +65,9 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 100,
   },
-  flag: {
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 5,
+ flag: {
+    resizeMode: "cover", // "cover" est mieux que "contain" pour remplir un cercle
+    backgroundColor: "transparent", // s'assure qu'il n'y a pas de fond
   },
 })
 

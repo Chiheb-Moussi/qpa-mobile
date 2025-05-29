@@ -65,12 +65,14 @@ const MilitaryTrainersListScreen = () => {
   }
 
   const renderTrainerItem = ({ item }: { item: MilitaryTrainer }) => (
-    <TouchableOpacity style={styles.trainerItem} onPress={() => handleTrainerPress(item.id)} activeOpacity={0.7}>
-      <Image source={item.image} style={styles.trainerImage} />
-      <Text style={styles.trainerName} numberOfLines={2} ellipsizeMode="tail">
-        {item.name}
-      </Text>
-    </TouchableOpacity>
+    <View style={styles.trainerItemContainer}>
+      <TouchableOpacity style={styles.trainerItem} onPress={() => handleTrainerPress(item.id)} activeOpacity={0.7}>
+        <Image source={item.image} style={styles.trainerImage} />
+        <Text style={styles.trainerName} numberOfLines={2} ellipsizeMode="tail">
+          {item.name}
+        </Text>
+      </TouchableOpacity>
+    </View>
   )
 
   return (
@@ -84,7 +86,7 @@ const MilitaryTrainersListScreen = () => {
           onPress={() => handleMenuPress("courses")}
         />
         <MenuButton
-          title="ليرايا العروض العسكرية"
+          title="سرايا العروض العسكرية"
           icon={require("../assets/images/police.png")}
           onPress={() => handleMenuPress("military")}
           isSelected={true}
@@ -136,13 +138,13 @@ const MilitaryTrainersListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0e6d2", // Beige background as shown in image 10
+    backgroundColor: "#f7f7f7",
   },
   menuContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingVertical: 15,
-    paddingHorizontal: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 8,
     backgroundColor: "#fff",
     borderRadius: 20,
     marginHorizontal: 10,
@@ -170,7 +172,7 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#eee",
     marginRight: 10,
   },
   searchInput: {
@@ -191,31 +193,44 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#eee",
   },
   listContent: {
-    padding: 10,
+    padding: 8,
+  },
+  trainerItemContainer: {
+    flex: 1 / 3,
+    padding: 8,
   },
   trainerItem: {
-    flex: 1 / 3,
     alignItems: "center",
-    padding: 10,
-    height: 140, // Fixed height for all cards
+    backgroundColor: "white",
+    padding: 12,
+    borderRadius: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 3,
+    height: 140,
   },
   trainerImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
     marginBottom: 8,
-    borderWidth: 1,
-    borderColor: "#ccc",
+    borderWidth: 0.5,
+    borderColor: "#E0E0E0",
   },
   trainerName: {
-    fontFamily: "Cairo-Regular",
+    fontFamily: "Cairo-SemiBold",
     fontSize: 12,
     textAlign: "center",
     color: Colors.text,
-    height: 36, // Fixed height for text (2 lines)
+    height: 36,
     width: "100%",
   },
 })

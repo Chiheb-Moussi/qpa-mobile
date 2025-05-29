@@ -195,20 +195,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
     elevation: 3,
+    height: 140,
   },
   trainerImage: {
     width: 70,
     height: 70,
     borderRadius: 35,
     marginBottom: 8,
-    borderWidth: 2,
-    borderColor: Colors.primary,
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
   },
   trainerName: {
     fontFamily: "Cairo-SemiBold",
     fontSize: 12,
     textAlign: "center",
     color: Colors.text,
+    height: 36,
+    width: "100%",
   },
 })
 
