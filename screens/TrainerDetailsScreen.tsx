@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flex: 1,
-    alignItems: "center",
+    alignItems: "flex-start",
   },
   trainerImage: {
     width: 90,
@@ -401,10 +401,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: Colors.text,
     textAlign: "center",
+    marginLeft:15
   },
   experienceContainer: {
     alignItems: "center",
     marginTop: 5,
+    marginLeft:20
   },
   experienceValue: {
     fontFamily: "Cairo-Bold",
