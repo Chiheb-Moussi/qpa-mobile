@@ -11,6 +11,7 @@ import Header from "../components/Header"
 import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
+import { LayoutChangeEvent } from "react-native"
 
 type TrainerDetailsScreenRouteProp = RouteProp<RootStackParamList, "TrainerDetails">
 
@@ -22,8 +23,10 @@ interface SectionProps {
 
 const Section: React.FC<SectionProps> = ({ title, children, initiallyExpanded = false }) => {
   const [expanded, setExpanded] = useState(initiallyExpanded)
+  const [contentHeight, setContentHeight] = useState(0)
   const animationHeight = useRef(new Animated.Value(initiallyExpanded ? 1 : 0)).current
   const fadeAnim = useRef(new Animated.Value(0)).current
+  const contentRef = useRef<View>(null)
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -44,8 +47,15 @@ const Section: React.FC<SectionProps> = ({ title, children, initiallyExpanded = 
 
   const bodyHeight = animationHeight.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 500],
+    outputRange: [0, contentHeight],
   })
+
+  const onContentLayout = (event: LayoutChangeEvent) => {
+    const { height } = event.nativeEvent.layout
+    if (height > 0) {
+      setContentHeight(height)
+    }
+  }
 
   return (
     <Animated.View
@@ -70,9 +80,9 @@ const Section: React.FC<SectionProps> = ({ title, children, initiallyExpanded = 
       </TouchableOpacity>
 
       <Animated.View style={[styles.sectionContent, { height: bodyHeight }]}>
-        <ScrollView nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
+        <View ref={contentRef} onLayout={onContentLayout} style={styles.contentWrapper}>
           {children}
-        </ScrollView>
+        </View>
       </Animated.View>
     </Animated.View>
   )
@@ -268,65 +278,94 @@ const TrainerDetailsScreen = () => {
         </Section>
 
         <Section title="العبء الوظيفي">
-          <View style={styles.workloadContainer}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <View>
-                <View style={styles.tableHeader}>
-                  <Text style={[styles.tableHeaderCell, { width: 100 }]}>الدورات</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>عدد ساعات الدورة</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>المهام</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>عدد الساعات المنجزة</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>حالات</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>التقييم</Text>
+          <View style={{ padding: 16 }}>
+            <View style={{ flexDirection: 'row' }}>
+              {/* Scrollable Columns */}
+              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                <View>
+                  {/* Header */}
+                  <View style={{ 
+                    flexDirection: 'row', 
+                    backgroundColor: Colors.primary, 
+                    borderTopLeftRadius: 8, 
+                    borderBottomLeftRadius: 8,
+                    paddingVertical: 8
+                  }}>
+                    <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
+                    <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
+                    <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>عدد الساعات المنجزة</Text>
+                    <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
+                    <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>عدد ساعات الدورة</Text>
+                  </View>
+                  {/* Rows */}
+                  {trainerData.workload.map((item, idx) => (
+                    <View key={idx} style={{ 
+                      flexDirection: 'row', 
+                      backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                      paddingVertical: 8,
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#eee'
+                    }}>
+                      <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
+                      <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.cases}</Text>
+                      <Text style={[styles.cell, { width: 120, color: Colors.text, textAlign: 'center' }]}>{item.supervised}</Text>
+                      <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.role}</Text>
+                      <Text style={[styles.cell, { width: 100, color: Colors.text, textAlign: 'center' }]}>{item.hours}</Text>
+                    </View>
+                  ))}
                 </View>
+              </ScrollView>
 
-                {trainerData.workload.map((item, index) => (
-                  <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : {}]}>
-                    <Text style={[styles.tableCell, { width: 100 }]}>{item.course}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.hours}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.role}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.supervised}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.cases}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.evaluation}</Text>
+              {/* Fixed Column */}
+              <View style={{ 
+                width: 140, 
+                backgroundColor: Colors.primary, 
+                borderTopRightRadius: 8, 
+                borderBottomRightRadius: 8,
+                zIndex: 1
+              }}>
+                <View style={{ paddingVertical: 8 }}>
+                  <Text style={[styles.headerCell, { color: 'white', textAlign: 'right' }]}>الدورة</Text>
+                </View>
+                {trainerData.workload.map((item, idx) => (
+                  <View key={idx} style={{ 
+                    backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                    paddingVertical: 8,
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#eee'
+                  }}>
+                    <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
+                      {item.course}
+                    </Text>
                   </View>
                 ))}
-              </View>
-            </ScrollView>
-
-            <View style={styles.hoursContainer}>
-              <View style={styles.hoursItem}>
-                <Text style={styles.hoursValue}>{trainerData.trainingHours} ساعة</Text>
-                <Text style={styles.hoursLabel}>عدد الساعات التدريبية</Text>
-              </View>
-              <View style={styles.hoursItem}>
-                <Text style={styles.hoursValue}>{trainerData.supervisionHours} ساعة</Text>
-                <Text style={styles.hoursLabel}>عدد ساعات الإشراف</Text>
               </View>
             </View>
           </View>
         </Section>
 
         <Section title="الإختبارات و الوزن الشهري">
-          <View style={styles.evaluationsContainer}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={{ padding: 16 }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={true}>
               <View>
-                <View style={styles.tableHeader}>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>الشهر</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>النتيجة</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>التقييم</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>الوزن</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 80 }]}>الوزن الزائد</Text>
-                  <Text style={[styles.tableHeaderCell, { width: 100 }]}>الملاحظة</Text>
+                {/* Header */}
+                <View style={{ flexDirection: 'row', backgroundColor: Colors.primary, borderRadius: 8, paddingVertical: 8 }}>
+                  <Text style={[styles.headerCell, { width: 60, backgroundColor: Colors.primary, color: 'white', textAlign: 'center' }]}>الشهر</Text>
+                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
+                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>التقييم</Text>
+                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الوزن</Text>
+                  <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>الوزن الزائد</Text>
+                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الملاحظة</Text>
                 </View>
-
-                {trainerData.evaluations.map((item, index) => (
-                  <View key={index} style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : {}]}>
-                    <Text style={[styles.tableCell, { width: 80 }]}>شهر {item.month}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.result}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.evaluation}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.weight}</Text>
-                    <Text style={[styles.tableCell, { width: 80 }]}>{item.weightChange}</Text>
-                    <Text style={[styles.tableCell, { width: 100 }]}>{item.note}</Text>
+                {/* Rows */}
+                {trainerData.evaluations.map((item, idx) => (
+                  <View key={idx} style={{ flexDirection: 'row', backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white', borderRadius: 8, paddingVertical: 8 }}>
+                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>شهر {item.month}</Text>
+                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.result}</Text>
+                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
+                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.weight}</Text>
+                    <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.weightChange}</Text>
+                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.note}</Text>
                   </View>
                 ))}
               </View>
@@ -461,7 +500,7 @@ const styles = StyleSheet.create({
   },
   sectionHeader: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: Colors.primary,
     paddingVertical: 12,
@@ -471,10 +510,15 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo-Bold",
     fontSize: 16,
     color: "white",
-    marginRight: 8,
+    flex: 1,
+    textAlign: "right",
   },
   sectionContent: {
     overflow: "hidden",
+  },
+  contentWrapper: {
+    position: "absolute",
+    width: "100%",
   },
   educationContainer: {
     padding: 16,
@@ -514,34 +558,57 @@ const styles = StyleSheet.create({
   workloadContainer: {
     padding: 16,
   },
-  tableHeader: {
+  tableContainer: {
     flexDirection: "row",
-    backgroundColor: Colors.primary,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    overflow: "hidden",
   },
-  tableHeaderCell: {
-    paddingVertical: 10,
-    paddingHorizontal: 5,
+  fixedColumn: {
+    width: 150,
+    borderRightWidth: 1,
+    borderRightColor: "rgba(255, 255, 255, 0.3)",
+  },
+  fixedHeaderCell: {
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.3)",
+    paddingBottom: 10,
+    textAlign: 'right',
+    writingDirection: 'rtl',
     color: "white",
     fontFamily: "Cairo-Bold",
-    fontSize: 12,
+    fontSize: 14,
+    textDecorationLine: "underline",
+  },
+  fixedCell: {
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.1)",
+  },
+  tableHeader: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.3)",
+    paddingBottom: 10,
+  },
+  headerCell: {
+    width: 120,
+    color: "white",
+    fontFamily: "Cairo-Bold",
+    fontSize: 14,
     textAlign: "center",
     textDecorationLine: "underline",
   },
   tableRow: {
     flexDirection: "row",
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#eee",
+    borderBottomColor: "rgba(255, 255, 255, 0.1)",
   },
   evenRow: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
   },
-  tableCell: {
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    color: Colors.text,
+  cell: {
+    width: 120,
+    color: "white",
     fontFamily: "Cairo-Regular",
     fontSize: 12,
     textAlign: "center",
