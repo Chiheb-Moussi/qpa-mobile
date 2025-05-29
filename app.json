@@ -14,37 +14,38 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.policeqatar.app"
+      "bundleIdentifier": "com.policeqatar.app",
+      "isRTL": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.policeqatar.app"
+      "package": "com.policeqatar.app",
+      "isRTL": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-  "plugins": [
-  [
-    "expo-font",
-    {
-      "fontDefinitions": {
-        "Cairo-Regular": {
-          "asset": "./assets/fonts/Cairo-Regular.ttf"
-        },
-        "Cairo-Bold": {
-          "asset": "./assets/fonts/Cairo-Bold.ttf"
-        },
-        "Cairo-SemiBold": {
-          "asset": "./assets/fonts/Cairo-SemiBold.ttf"
+    "plugins": [
+      [
+        "expo-font",
+        {
+          "fontDefinitions": {
+            "Cairo-Regular": {
+              "asset": "./assets/fonts/Cairo-Regular.ttf"
+            },
+            "Cairo-Bold": {
+              "asset": "./assets/fonts/Cairo-Bold.ttf"
+            },
+            "Cairo-SemiBold": {
+              "asset": "./assets/fonts/Cairo-SemiBold.ttf"
+            }
+          }
         }
-      }
-    }
-  ]
-],
-
+      ]
+    ],
     "sdkVersion": "53.0.0"
   }
 }

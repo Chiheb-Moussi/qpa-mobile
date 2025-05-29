@@ -3,8 +3,9 @@
 import type React from "react"
 
 import { useRef, useEffect } from "react"
-import { TouchableOpacity, Text, Image, StyleSheet, Animated, type ImageSourcePropType } from "react-native"
+import { TouchableOpacity, Text, Image, StyleSheet, Animated, type ImageSourcePropType, View } from "react-native"
 import Colors from "../constants/Colors"
+import { RTLStyles } from "../utils/i18n"
 
 interface MenuButtonProps {
   title: string
@@ -42,11 +43,23 @@ const MenuButton: React.FC<MenuButtonProps> = ({ title, icon, onPress, isSelecte
   }
 
   return (
-    <TouchableOpacity style={[styles.container, isSelected && styles.selected]} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity
+      style={[styles.container, isSelected && styles.selectedContainer]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
       <Animated.View style={[styles.iconContainer, isSelected && { transform: [{ scale: pulseAnim }] }]}>
         <Image source={icon} style={styles.icon} resizeMode="contain" />
       </Animated.View>
-      <Text style={[styles.title, isSelected && styles.selectedText]}>{title}</Text>
+      <View style={styles.titleContainer}>
+        <Text 
+          style={[styles.title, isSelected && styles.selectedTitle, RTLStyles]} 
+          numberOfLines={1}
+          minimumFontSize={9}
+        >
+          {title}
+        </Text>
+      </View>
     </TouchableOpacity>
   )
 }
@@ -55,46 +68,51 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    padding: 8,
-    borderRadius: 12,
-    width: 75,
+    padding: 6,
+    borderRadius: 10,
+    width: 65,
+    backgroundColor: "#fff",
+    height: 110,
   },
-  selected: {
+  selectedContainer: {
     backgroundColor: Colors.primary,
     shadowColor: Colors.primary,
     shadowOffset: {
       width: 0,
-      height: 3,
+      height: 2,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
   iconContainer: {
-    width: 70,
-    height: 70,
+    width: 50,
+    height: 50,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#f5f5f5",
-    borderRadius: 35,
-    marginBottom: 6,
+    borderRadius: 25,
+    marginBottom: 4,
   },
   icon: {
-    width: 45,
-    height: 45,
+    width: 30,
+    height: 30,
     alignSelf: "center",
+  },
+  titleContainer: {
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 2,
   },
   title: {
     fontFamily: "Cairo-Regular",
-    fontSize: 11,
+    fontSize: 10,
     textAlign: "center",
     color: Colors.text,
-    marginTop: 2,
     width: "100%",
-    numberOfLines: 1,
-    ellipsizeMode: "tail",
   },
-  selectedText: {
+  selectedTitle: {
     color: "white",
     fontFamily: "Cairo-Bold",
   },

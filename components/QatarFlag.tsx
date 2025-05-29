@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useRef, useEffect } from "react"
 import { Image, StyleSheet, View, TouchableOpacity, Animated } from "react-native"
+import { RTLAnimations } from "../utils/i18n"
 
 interface QatarFlagProps {
   size?: number
@@ -38,25 +39,23 @@ const QatarFlag: React.FC<QatarFlagProps> = ({ size = 60 }) => {
     <View style={styles.container}>
       <Animated.View style={{ transform: [{ scale: pulseAnim }] }}>
         <TouchableOpacity activeOpacity={0.7}>
-        <Image
-      source={require("../assets/images/qatar-flag.png")}
-      style={[
-        styles.flag,
-        {
-          width: size/2,
-          height: size/2,
-          borderRadius: size / 2,
-        },
-      ]}
-    />
+          <Image
+            source={require("../assets/images/qatar-flag.png")}
+            style={[
+              styles.flag,
+              {
+                width: size/2,
+                height: size/2,
+                borderRadius: size / 2,
+                transform: [{ scaleX: RTLAnimations.scaleX }],
+              },
+            ]}
+          />
         </TouchableOpacity>
       </Animated.View>
     </View>
   )
 }
-
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -65,9 +64,9 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 100,
   },
- flag: {
-    resizeMode: "cover", // "cover" est mieux que "contain" pour remplir un cercle
-    backgroundColor: "transparent", // s'assure qu'il n'y a pas de fond
+  flag: {
+    resizeMode: "cover",
+    backgroundColor: "transparent",
   },
 })
 

@@ -106,7 +106,7 @@ const QatarFlag = ({ size = 20 }: Props) => {
             isSelected={selectedMenuButton === "courses"}
           />
            <MenuButton
-            title="ليرايا العروض العسكرية"
+            title="سرايا العروض العسكرية"
             icon={require("../assets/images/police.png")}
             onPress={() => handleMenuPress("military")}
             isSelected={selectedMenuButton === "military"}

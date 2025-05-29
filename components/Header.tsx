@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native"
 import { Ionicons } from "@expo/vector-icons"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import Colors from "../constants/Colors"
+import { RTLIcons } from "../utils/i18n"
 
 interface HeaderProps {
   title: string
@@ -50,13 +51,13 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, rightCom
     >
       <StatusBar barStyle="dark-content" />
 
-      {showBackButton ? (
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.text} />
-        </TouchableOpacity>
-      ) : (
-        <View style={styles.leftPlaceholder} />
-      )}
+      <View style={styles.leftContainer}>
+        {showBackButton && (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name={RTLIcons.back} size={24} color="#333" />
+          </TouchableOpacity>
+        )}
+      </View>
 
       <Text style={styles.title}>{title}</Text>
 
@@ -82,16 +83,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#eee",
   },
-  leftPlaceholder: {
-    width: 28,
+  leftContainer: {
+    width: 40,
+    alignItems: "flex-end",
+  },
+  rightContainer: {
+    width: 40,
   },
   title: {
     fontSize: 20,
     fontFamily: "Cairo-Bold",
     color: Colors.text,
+    textAlign: "center",
+    flex: 1,
   },
   backButton: {
-    padding: 5,
+    padding: 4,
   },
   profileButton: {
     padding: 5,

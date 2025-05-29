@@ -66,7 +66,7 @@ const TrainerSpecializationScreen = () => {
       <View style={styles.menuContainer}>
       <MenuButton title="الدورات" icon={require("../assets/images/search.png")} onPress={() => {}} />
         <MenuButton
-          title="ليرايا العروض العسكرية"
+          title="سرايا العروض العسكرية"
           icon={require("../assets/images/police.png")}
           onPress={() => {}}
         />

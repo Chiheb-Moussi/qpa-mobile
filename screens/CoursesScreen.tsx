@@ -125,7 +125,7 @@ const CoursesScreen = () => {
           isSelected={true}
         />
           <MenuButton
-          title="ليرايا العروض العسكرية"
+          title="سرايا العروض العسكرية"
           icon={require("../assets/images/police.png")}
           onPress={() => handleMenuPress("military")}
         />
