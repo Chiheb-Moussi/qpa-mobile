@@ -113,11 +113,9 @@ const TrainersListScreen = () => {
             onChangeText={setSearchText}
             placeholderTextColor="#999"
           />
-          <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+          <Ionicons name="search" size={15} color="#999" style={styles.searchIcon} />
         </View>
-        <TouchableOpacity style={styles.filterButton}>
-          <Ionicons name="filter" size={22} color="#333" />
-        </TouchableOpacity>
+       
       </View>
 
       <FlatList
@@ -141,15 +139,16 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 6,
     alignItems: "center",
+    height:50,
   },
   searchInputContainer: {
     flex: 1,
     flexDirection: "row",
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 10,
+    paddingRight: 15,
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#eee",
