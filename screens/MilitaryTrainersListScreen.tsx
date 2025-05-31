@@ -10,7 +10,7 @@ import Header from "../components/Header"
 import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
-import MenuButton from "../components/MenuButton"
+import Menu from "@/components/Menu"
 
 type MilitaryTrainersListScreenNavigationProp = StackNavigationProp<RootStackParamList, "MilitaryTrainersList">
 
@@ -45,24 +45,6 @@ const MilitaryTrainersListScreen = () => {
     navigation.navigate("MilitaryTrainerDetail", { trainerId })
   }
 
-  const handleMenuPress = (menuItem: string) => {
-    switch (menuItem) {
-      case "trainers":
-        navigation.navigate("TrainerSpecialization")
-        break
-      case "students":
-        // Navigate to students screen
-        break
-      case "military":
-        // Already on military trainers screen
-        break
-      case "courses":
-        navigation.navigate("Courses")
-        break
-      default:
-        break
-    }
-  }
 
   const renderTrainerItem = ({ item }: { item: MilitaryTrainer }) => (
     <View style={styles.trainerItemContainer}>
@@ -79,32 +61,7 @@ const MilitaryTrainersListScreen = () => {
     <SafeAreaView style={styles.container}>
       <Header title="سرايا العروض العسكرية" showBackButton />
 
-      <View style={styles.menuContainer}>
-        <MenuButton
-          title="الدورات"
-          icon={require("../assets/images/search.png")}
-          onPress={() => handleMenuPress("courses")}
-        />
-        <MenuButton
-          title="سرايا العروض العسكرية"
-          icon={require("../assets/images/police.png")}
-          onPress={() => handleMenuPress("military")}
-          isSelected={true}
-        />
-        <MenuButton
-          title="طلبة الدبلوم"
-          icon={require("../assets/images/students-icon.png")}
-          onPress={() => handleMenuPress("students")}
-        />
-        <MenuButton
-          title="المدربين"
-          icon={require("../assets/images/trainers-icon.png")}
-          onPress={() => handleMenuPress("trainers")}
-        />
-        
-        
-      
-      </View>
+      <Menu />
 
       <View style={styles.searchContainer}>
         <TouchableOpacity style={styles.filterButton}>

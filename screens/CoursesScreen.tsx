@@ -9,7 +9,7 @@ import Header from "../components/Header"
 import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
-import MenuButton from "../components/MenuButton"
+import Menu from "@/components/Menu"
 
 type CoursesScreenNavigationProp = StackNavigationProp<RootStackParamList, "Courses">
 
@@ -94,52 +94,12 @@ const CoursesScreen = () => {
     navigation.navigate("CourseDetail", { course })
   }
 
-  const handleMenuPress = (menuItem: string) => {
-    switch (menuItem) {
-      case "trainers":
-        navigation.navigate("TrainerSpecialization")
-        break
-      case "students":
-        // Navigate to students screen
-        break
-      case "military":
-        navigation.navigate("MilitaryTrainersList")
-        break
-      case "courses":
-        // Already on courses screen
-        break
-      default:
-        break
-    }
-  }
 
   return (
     <SafeAreaView style={styles.container}>
       <Header title="الواجهة" showBackButton />
 
-      <View style={styles.menuContainer}>
-        <MenuButton
-          title="الدورات"
-          icon={require("../assets/images/search.png")}
-          onPress={() => handleMenuPress("courses")}
-          isSelected={true}
-        />
-        <MenuButton
-          title="سرايا العروض العسكرية"
-          icon={require("../assets/images/police.png")}
-          onPress={() => handleMenuPress("military")}
-        />
-        <MenuButton
-          title="طلبة الدبلوم"
-          icon={require("../assets/images/students-icon.png")}
-          onPress={() => handleMenuPress("students")}
-        />
-        <MenuButton
-          title="المدربين"
-          icon={require("../assets/images/trainers-icon.png")}
-          onPress={() => handleMenuPress("trainers")}
-        />
-      </View>
+      <Menu />
 
       <ScrollView style={styles.scrollView}>
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>

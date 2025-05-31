@@ -12,14 +12,12 @@ import YearSelector from "../components/YearSelector"
 import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
-import MenuButton from "../components/MenuButton"
+import Menu from "@/components/Menu"
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">
 
 const HomeScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>()
   const [selectedYear, setSelectedYear] = useState("2025")
-  const [selectedMenuButton, setSelectedMenuButton] = useState<string | null>(null)
   const scrollY = useRef(new Animated.Value(0)).current
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0.95)).current
@@ -27,21 +25,7 @@ type Props = {
   size?: number;
 };
 
-const QatarFlag = ({ size = 20 }: Props) => {
-  return (
-    <Image
-      source={require("../assets/images/qatar-flag.png")}
-      style={[
-        styles.flag,
-        {
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-        },
-      ]}
-    />
-  );
-};
+
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -57,26 +41,6 @@ const QatarFlag = ({ size = 20 }: Props) => {
     ]).start()
   }, [])
 
-  const handleMenuPress = (menuItem: string) => {
-    setSelectedMenuButton(menuItem)
-
-    switch (menuItem) {
-      case "trainers":
-        navigation.navigate("TrainerSpecialization")
-        break
-      case "students":
-        // Navigate to students screen
-        break
-      case "military":
-        navigation.navigate("MilitaryTrainersList")
-        break
-      case "courses":
-        navigation.navigate("Courses")
-        break
-      default:
-        break
-    }
-  }
 
   const opacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -98,33 +62,7 @@ const QatarFlag = ({ size = 20 }: Props) => {
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
         scrollEventThrottle={16}
       >
-           <View style={styles.menuContainer}>
-        <MenuButton
-            title="الدورات"
-            icon={require("../assets/images/search.png")}
-            onPress={() => handleMenuPress("courses")}
-            isSelected={selectedMenuButton === "courses"}
-          />
-           <MenuButton
-            title="سرايا العروض العسكرية"
-            icon={require("../assets/images/police.png")}
-            onPress={() => handleMenuPress("military")}
-            isSelected={selectedMenuButton === "military"}
-          />
-           <MenuButton
-            title="طلبة الدبلوم"
-            icon={require("../assets/images/students-icon.png")}
-            onPress={() => handleMenuPress("students")}
-            isSelected={selectedMenuButton === "students"}
-          />
-          
-          <MenuButton
-            title="المدربين"
-            icon={require("../assets/images/trainers-icon.png")}
-            onPress={() => handleMenuPress("trainers")}
-            isSelected={selectedMenuButton === "trainers"}
-          />
-        </View>
+        <Menu/>
         <Animated.View
           style={[
             styles.mainContent,
@@ -149,7 +87,6 @@ const QatarFlag = ({ size = 20 }: Props) => {
               />
               <View style={styles.imageOverlay}>
                 <Text style={styles.instituteText}>معهد الشرطة - الدوحة</Text>
-                <Text style={styles.instituteSubText}>POLICE TRAINING INSTITUTE</Text>
               </View>
             </Animated.View>
           </Card>
@@ -192,7 +129,7 @@ const QatarFlag = ({ size = 20 }: Props) => {
         </Animated.View>
       </Animated.ScrollView>
 
-      <QatarFlag size={30} />
+      <QatarFlag size={50} />
     </SafeAreaView>
   )
 }

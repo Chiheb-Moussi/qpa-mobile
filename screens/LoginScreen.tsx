@@ -97,12 +97,7 @@ const LoginScreen = () => {
              <Text style={styles.loginButtonText}>{isLoading ? "جاري تسجيل الدخول..." : "تسجيل"}</Text>
             </TouchableOpacity>
 
-            <View style={styles.registerContainer}>
-              <TouchableOpacity>
-                <Text style={styles.registerText}>اشترك</Text>
-              </TouchableOpacity>
-              <Text style={styles.needAccountText}>هل تحتاج إلى إنشاء حساب؟</Text>
-            </View>
+            
           </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>

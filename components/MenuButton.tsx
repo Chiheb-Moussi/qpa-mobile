@@ -10,13 +10,13 @@ import { RTLStyles } from "../utils/i18n"
 interface MenuButtonProps {
   title: string
   icon: ImageSourcePropType
+  selectedIcon: ImageSourcePropType
   onPress: () => void
   isSelected?: boolean
 }
 
-const MenuButton: React.FC<MenuButtonProps> = ({ title, icon, onPress, isSelected = false }) => {
+const MenuButton: React.FC<MenuButtonProps> = ({ title, icon, onPress, isSelected = false, selectedIcon }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current
-
   useEffect(() => {
     if (isSelected) {
       startPulseAnimation()
@@ -44,12 +44,12 @@ const MenuButton: React.FC<MenuButtonProps> = ({ title, icon, onPress, isSelecte
 
   return (
     <TouchableOpacity
-      style={[styles.container, isSelected && styles.selectedContainer]}
+      style={[styles.container]}
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <Animated.View style={[styles.iconContainer, isSelected && { transform: [{ scale: pulseAnim }] }]}>
-        <Image source={icon} style={styles.icon} resizeMode="contain" />
+      <Animated.View style={[styles.iconContainer, isSelected && styles.selectedIconContainer, isSelected && { transform: [{ scale: pulseAnim }] }]}>
+        <Image source={isSelected ? selectedIcon : icon} style={styles.icon} resizeMode="contain" />
       </Animated.View>
       <View style={styles.titleContainer}>
         <Text 
@@ -94,9 +94,12 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     marginBottom: 4,
   },
+  selectedIconContainer: {
+    backgroundColor: Colors.primary,
+  },
   icon: {
-    width: 40,
-    height: 40,
+    width: 34,
+    height: 34,
     alignSelf: "center",
   },
   titleContainer: {
@@ -113,8 +116,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   selectedTitle: {
-    color: "white",
+    color: Colors.primary,
     fontFamily: "Cairo-Bold",
+    fontWeight: "bold",
   },
 })
 
