@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useEffect } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated, ActivityIndicator } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useNavigation } from "@react-navigation/native"
 import type { StackNavigationProp } from "@react-navigation/stack"
@@ -10,23 +10,14 @@ import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import Menu from "@/components/Menu"
+import { useCourses } from "../contexts/CoursesContext"
 
 type CoursesScreenNavigationProp = StackNavigationProp<RootStackParamList, "Courses">
-
-interface Course {
-  id: string
-  name: string
-  date: string
-  status: string
-  duration: string
-  program: string
-  startDate?: string
-  endDate?: string
-}
 
 const CoursesScreen = () => {
   const navigation = useNavigation<CoursesScreenNavigationProp>()
   const fadeAnim = useRef(new Animated.Value(0)).current
+  const { courses, isLoading, error } = useCourses()
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -36,64 +27,35 @@ const CoursesScreen = () => {
     }).start()
   }, [fadeAnim])
 
-  // Mock data for courses
-  const courses: Course[] = [
-    {
-      id: "1",
-      name: "دوريات أمنية",
-      date: "02-01-2025",
-      status: "منجزة",
-      duration: "4 أسابيع",
-      program: "مرفق",
-      startDate: "2025/01/02",
-      endDate: "2025/01/30",
-    },
-    {
-      id: "2",
-      name: "فض شغب",
-      date: "10-03-2025",
-      status: "منجزة",
-      duration: "6 أسابيع",
-      program: "مرفق",
-      startDate: "2025/03/10",
-      endDate: "2025/04/21",
-    },
-    {
-      id: "3",
-      name: 'شرطة مستجدين "الدفعة 20"',
-      date: "15-04-2025",
-      status: "مؤجلة",
-      duration: "16 أسبوع",
-      program: "مرفق",
-      startDate: "2025/04/25",
-      endDate: "2025/08/25",
-    },
-    {
-      id: "4",
-      name: 'طلبة الدبلوم "الدفعة الثانية"',
-      date: "04-06-2025",
-      status: "ملغاة",
-      duration: "16 أسبوع",
-      program: "مرفق",
-      startDate: "2025/06/04",
-      endDate: "2025/09/24",
-    },
-    {
-      id: "5",
-      name: 'طلبة الدبلوم "الدفعة الثالثة"',
-      date: "18-07-2025",
-      status: "في الإنتظار",
-      duration: "16 أسبوع",
-      program: "مرفق",
-      startDate: "2025/07/18",
-      endDate: "2025/11/07",
-    },
-  ]
-
-  const handleCoursePress = (course: Course) => {
-    navigation.navigate("CourseDetail", { course })
+  const handleCoursePress = (course: any) => {
+    if (course.status === "مأجلة") {
+      navigation.navigate("CourseDetail", { course })
+    }
   }
 
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title="الواجهة" showBackButton />
+        <Menu />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title="الواجهة" showBackButton />
+        <Menu />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -107,8 +69,6 @@ const CoursesScreen = () => {
             <Text style={styles.title}>رزنامة الدورات</Text>
 
             <View style={styles.tableContainer}>
-            
-
               {/* Colonnes scrollables */}
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <View>
@@ -133,8 +93,8 @@ const CoursesScreen = () => {
                   ))}
                 </View>
               </ScrollView>
-                {/* Colonne fixe */}
-                <View style={styles.fixedColumn}>
+              {/* Colonne fixe */}
+              <View style={styles.fixedColumn}>
                 <Text style={[styles.headerCell, styles.fixedHeaderCell]}>اسم الدورة</Text>
                 {courses.map((course, index) => (
                   <TouchableOpacity
@@ -162,6 +122,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f7f7f7",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: 'red',
+    fontFamily: 'Cairo-Regular',
+    fontSize: 16,
+    textAlign: 'center',
   },
   menuContainer: {
     flexDirection: "row",
@@ -232,8 +209,9 @@ const styles = StyleSheet.create({
     color: "white",
     fontFamily: "Cairo-Bold",
     fontSize: 14,
-    textAlign: "center",
     textDecorationLine: "underline",
+    textAlign: "right",
+    writingDirection: "rtl",
   },
   tableRow: {
     flexDirection: "row",
@@ -246,10 +224,12 @@ const styles = StyleSheet.create({
   },
   cell: {
     width: 120,
+    height: 16,
     color: "white",
     fontFamily: "Cairo-Regular",
     fontSize: 12,
-    textAlign: "center",
+    textAlign: "right",
+    writingDirection: "rtl",
   },
   statusCell: {
     fontFamily: "Cairo-Bold",

@@ -13,18 +13,15 @@ import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import Menu from "@/components/Menu"
+import { useAcademicYear } from "../contexts/AcademicYearContext"
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">
 
 const HomeScreen = () => {
-  const [selectedYear, setSelectedYear] = useState("2025")
+  const { selectedYear, setSelectedYear, academicYears, isLoading } = useAcademicYear()
   const scrollY = useRef(new Animated.Value(0)).current
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0.95)).current
-type Props = {
-  size?: number;
-};
-
 
   useEffect(() => {
     Animated.parallel([
@@ -40,7 +37,6 @@ type Props = {
       }),
     ]).start()
   }, [])
-
 
   const opacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -74,9 +70,14 @@ type Props = {
         >
           <Card style={styles.blueCard}>
             <YearSelector
-              currentYear={selectedYear}
-              onYearChange={setSelectedYear}
-              years={["2023", "2024", "2025", "2026"]}
+              currentYear={selectedYear?.name || ""}
+              onYearChange={(yearName) => {
+                const year = academicYears.find(y => y.name === yearName)
+                if (year) {
+                  setSelectedYear(year)
+                }
+              }}
+              years={academicYears.map(year => year.name)}
             />
 
             <Animated.View style={[styles.instituteImageContainer, { opacity: fadeAnim }]}>
