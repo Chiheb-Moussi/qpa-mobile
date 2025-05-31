@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   arrowContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+  
     borderRadius: 15,
     padding: 5,
   },

@@ -181,12 +181,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   fixedColumn: {
-    width: 150,
-    borderRightWidth: 1,
+    width: 140,
+    borderRightWidth: 0,
     borderRightColor: "rgba(255, 255, 255, 0.3)",
   },
   fixedHeaderCell: {
     borderBottomWidth: 1,
+    width:140,
     borderBottomColor: "rgba(255, 255, 255, 0.3)",
     paddingBottom: 10,
     textAlign: 'right', 

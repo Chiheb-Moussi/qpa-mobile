@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated } from "react-native"
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, type RouteProp } from "@react-navigation/native"
 import { Ionicons } from "@expo/vector-icons"
@@ -185,196 +185,253 @@ const TrainerDetailsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="بطاقة تعريف المدرب" showBackButton />
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.keyboardAvoidingView}
+      >
+        <Header title="بطاقة تعريف المدرب" showBackButton />
 
-      <ScrollView style={styles.scrollView}>
-        <Animated.View
-          style={[
-            styles.profileCard,
-            {
-              opacity: fadeAnim,
-              transform: [
-                {
-                  scale: fadeAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.95, 1],
-                  }),
-                },
-              ],
-            },
-          ]}
-        >
+        <ScrollView style={styles.scrollView}>
+          <Animated.View
+            style={[
+              styles.profileCard,
+              {
+                opacity: fadeAnim,
+                transform: [
+                  {
+                    scale: fadeAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.95, 1],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
             <View style={styles.imageContainer}>
-            <Image source={trainerData.image} style={styles.trainerImage} />
-            <Text style={styles.specialization}>{trainerData.specialization}</Text>
-            <View style={styles.experienceContainer}>
-              <Text style={styles.experienceValue}>{trainerData.experience.split(" ")[0]}</Text>
-              <Text style={styles.experienceLabel}>سنة الخبرة</Text>
+              <Image source={trainerData.image} style={styles.trainerImage} />
+              <Text style={styles.specialization} numberOfLines={2}>{trainerData.specialization}</Text>
             </View>
+            <View style={styles.profileInfo}>
+              <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { flex: 1 }]}>
+                  <Text style={styles.infoValue}>{trainerData.name}</Text>
+                  <Text style={styles.infoLabel}>الإسم:</Text>
+                </View>
+              </View>
+              <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { flex: 1 }]}>
+                  <Text style={styles.infoValue}>{trainerData.nationality}</Text>
+                  <Text style={styles.infoLabel}>الجنسية:</Text>
+                </View>
+              </View>
+              <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { flex: 1 }]}>
+                  <Text style={styles.infoValue}>{trainerData.position}</Text>
+                  <Text style={styles.infoLabel}>المسمى الوظيفي:</Text>
+                </View>
+              </View>
+              <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { flex: 1 }]}>
+                  <Text style={styles.infoValue}>{trainerData.militaryId}</Text>
+                  <Text style={styles.infoLabel}>الرقم العسكري:</Text>
+                </View>
+              </View>
+              <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { flex: 1 }]}>
+                  <Text style={styles.infoValue}>{trainerData.birthDate}</Text>
+                  <Text style={styles.infoLabel}>تاريخ الميلاد:</Text>
+                </View>
+              </View>
+              <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { marginRight: 20 }]}>
+                  <Text style={styles.infoValue}>{trainerData.experience.split(" ")[0]} سنة</Text>
+                  <Text style={styles.infoLabel}>سنوات الخبرة :</Text>
+                </View>
+                <View style={styles.infoContent}>
+                  <Text style={styles.infoValue}>{trainerData.appointmentDate}</Text>
+                  <Text style={styles.infoLabel}>تاريخ التعيين:</Text>
+                </View>
+              </View>
+            </View>
+          </Animated.View>
+
+          <View style={styles.contactRow}>
+            <TouchableOpacity style={styles.contactButton}>
+              <Ionicons name="mail" size={22} color={Colors.primary} />
+              <Text style={styles.contactText}>{trainerData.email}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.contactButton}>
+              <Ionicons name="call" size={22} color={Colors.primary} />
+              <Text style={styles.contactText}>{trainerData.phone}</Text>
+            </TouchableOpacity>
           </View>
-          <View style={styles.profileInfo}>
-          <View style={styles.infoRow}>
-          <Text style={styles.infoValue}>{trainerData.name}</Text>
-          <Text style={styles.infoLabel}> الإسم:</Text></View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.nationality}</Text>
-              <Text style={styles.infoLabel}>الجنسية:</Text>
+
+          <Section title="المؤهل العلمي و الدورات" initiallyExpanded={true}>
+            <View style={styles.educationContainer}>
+              <View style={styles.educationRow}>
+                <Text style={styles.educationValue}>{trainerData.education.level}</Text>
+                <Text style={styles.educationLabel}>المستوى العلمي:</Text>
+              </View>
+              <View style={styles.educationRow}>
+                <Text style={styles.educationValue}>{trainerData.education.specialization}</Text>
+                <Text style={styles.educationLabel}>الإختصاص:</Text>
+              </View>
+
+              <View style={styles.coursesContainer}>
+                <View style={styles.coursesHeader}>
+                  <Text style={styles.courseItem}>- {trainerData.courses[0]}</Text>
+                  <Text style={styles.coursesLabel}>الدورات:</Text>
+                </View>
+                <View style={styles.coursesList}>
+                  {trainerData.courses.slice(1).map((course, index) => (
+                    <Text key={index} style={[styles.courseItem, { paddingRight: 50 }]}>
+                      - {course}
+                    </Text>
+                  ))}
+                </View>
+              </View>
             </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.position}</Text>
-              <Text style={styles.infoLabel}>المسمى الوظيفي:</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.militaryId}</Text>
-              <Text style={styles.infoLabel}>الرقم العسكري:</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.birthDate}</Text>
-              <Text style={styles.infoLabel}>تاريخ الميلاد:</Text>
-            </View>
-            <View style={styles.infoRow}>
-              <Text style={styles.infoValue}>{trainerData.appointmentDate}</Text>
-              <Text style={styles.infoLabel}>تاريخ التعيين:</Text>
-            </View>
-          </View>
+          </Section>
 
-        
-
-
-
-        
-        </Animated.View>
-
-        <View style={styles.contactRow}>
-          <TouchableOpacity style={styles.contactButton}>
-            <Ionicons name="mail" size={22} color={Colors.primary} />
-            <Text style={styles.contactText}>{trainerData.email}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.contactButton}>
-            <Ionicons name="call" size={22} color={Colors.primary} />
-            <Text style={styles.contactText}>{trainerData.phone}</Text>
-          </TouchableOpacity>
-        </View>
-
-        <Section title="المؤهل العلمي و الدورات" initiallyExpanded={true}>
-          <View style={styles.educationContainer}>
-            <View style={styles.educationRow}>
-              <Text style={styles.educationValue}>{trainerData.education.level}</Text>
-              <Text style={styles.educationLabel}>:المستوى العلمي</Text>
-            </View>
-            <View style={styles.educationRow}>
-              <Text style={styles.educationValue}>{trainerData.education.specialization}</Text>
-              <Text style={styles.educationLabel}>:الإختصاص</Text>
-            </View>
-
-            <Text style={styles.coursesLabel}>:الدورات</Text>
-            {trainerData.courses.map((course, index) => (
-              <Text key={index} style={styles.courseItem}>
-                - {course}
-              </Text>
-            ))}
-          </View>
-        </Section>
-
-        <Section title="العبء الوظيفي">
-          <View style={{ padding: 16 }}>
-            <View style={{ flexDirection: 'row' }}>
-              {/* Scrollable Columns */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-                <View>
-                  {/* Header */}
-                  <View style={{ 
-                    flexDirection: 'row', 
-                    backgroundColor: Colors.primary, 
-                    borderTopLeftRadius: 8, 
-                    borderBottomLeftRadius: 8,
-                    paddingVertical: 8
-                  }}>
-                    <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
-                    <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
-                    <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>عدد الساعات المنجزة</Text>
-                    <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
-                    <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>عدد ساعات الدورة</Text>
+          <Section title="العبء الوظيفي">
+            <View style={{ padding: 16 }}>
+              <View style={{ flexDirection: 'row' }}>
+                {/* Scrollable Columns */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                  <View>
+                    {/* Header */}
+                    <View style={{ 
+                      flexDirection: 'row', 
+                    
+                      borderTopLeftRadius: 8, 
+                      borderBottomLeftRadius: 8,
+                      paddingVertical: 8
+                    }}>
+                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
+                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
+                      <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>عدد الساعات المنجزة</Text>
+                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
+                      <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>عدد ساعات الدورة</Text>
+                    </View>
+                    {/* Rows */}
+                    {trainerData.workload.map((item, idx) => (
+                      <View key={idx} style={{ 
+                        flexDirection: 'row', 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee'
+                      }}>
+                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
+                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.cases}</Text>
+                        <Text style={[styles.cell, { width: 120, color: Colors.text, textAlign: 'center' }]}>{item.supervised}</Text>
+                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.role}</Text>
+                        <Text style={[styles.cell, { width: 100, color: Colors.text, textAlign: 'center' }]}>{item.hours}</Text>
+                      </View>
+                    ))}
                   </View>
-                  {/* Rows */}
+                </ScrollView>
+
+                {/* Fixed Column */}
+                <View style={{ 
+                  width: 140, 
+                  borderTopRightRadius: 8, 
+                  borderBottomRightRadius: 8,
+                  zIndex: 1
+                }}>
+                  <View style={{ paddingVertical: 8 }}>
+                    <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الدورة</Text>
+                  </View>
                   {trainerData.workload.map((item, idx) => (
                     <View key={idx} style={{ 
-                      flexDirection: 'row', 
                       backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
                       paddingVertical: 8,
                       borderBottomWidth: 1,
                       borderBottomColor: '#eee'
                     }}>
-                      <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
-                      <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.cases}</Text>
-                      <Text style={[styles.cell, { width: 120, color: Colors.text, textAlign: 'center' }]}>{item.supervised}</Text>
-                      <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.role}</Text>
-                      <Text style={[styles.cell, { width: 100, color: Colors.text, textAlign: 'center' }]}>{item.hours}</Text>
+                      <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
+                        {item.course}
+                      </Text>
                     </View>
                   ))}
                 </View>
-              </ScrollView>
-
-              {/* Fixed Column */}
-              <View style={{ 
-                width: 140, 
-                backgroundColor: Colors.primary, 
-                borderTopRightRadius: 8, 
-                borderBottomRightRadius: 8,
-                zIndex: 1
-              }}>
-                <View style={{ paddingVertical: 8 }}>
-                  <Text style={[styles.headerCell, { color: 'white', textAlign: 'right' }]}>الدورة</Text>
-                </View>
-                {trainerData.workload.map((item, idx) => (
-                  <View key={idx} style={{ 
-                    backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
-                    paddingVertical: 8,
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#eee'
-                  }}>
-                    <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
-                      {item.course}
-                    </Text>
-                  </View>
-                ))}
               </View>
             </View>
-          </View>
-        </Section>
+          </Section>
 
-        <Section title="الإختبارات و الوزن الشهري">
-          <View style={{ padding: 16 }}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-              <View>
-                {/* Header */}
-                <View style={{ flexDirection: 'row', backgroundColor: Colors.primary, borderRadius: 8, paddingVertical: 8 }}>
-                  <Text style={[styles.headerCell, { width: 60, backgroundColor: Colors.primary, color: 'white', textAlign: 'center' }]}>الشهر</Text>
-                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
-                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>التقييم</Text>
-                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الوزن</Text>
-                  <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>الوزن الزائد</Text>
-                  <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الملاحظة</Text>
-                </View>
-                {/* Rows */}
-                {trainerData.evaluations.map((item, idx) => (
-                  <View key={idx} style={{ flexDirection: 'row', backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white', borderRadius: 8, paddingVertical: 8 }}>
-                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>شهر {item.month}</Text>
-                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.result}</Text>
-                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
-                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.weight}</Text>
-                    <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.weightChange}</Text>
-                    <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.note}</Text>
+          <Section title="الإختبارات و الوزن الشهري">
+            <View style={{ padding: 16 }}>
+              <View style={{ flexDirection: 'row' }}>
+                {/* Scrollable Columns */}
+                <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                  <View>
+                    {/* Header */}
+                    <View style={{ 
+                      flexDirection: 'row', 
+                      borderTopLeftRadius: 8, 
+                      borderBottomLeftRadius: 8,
+                      paddingVertical: 8
+                    }}>
+                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
+                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>التقييم</Text>
+                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الوزن</Text>
+                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>الوزن الزائد</Text>
+                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الملاحظة</Text>
+                    </View>
+                    {/* Rows */}
+                    {trainerData.evaluations.map((item, idx) => (
+                      <View key={idx} style={{ 
+                        flexDirection: 'row', 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee'
+                      }}>
+                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.result}</Text>
+                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
+                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.weight}</Text>
+                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.weightChange}</Text>
+                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.note}</Text>
+                      </View>
+                    ))}
                   </View>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
-        </Section>
-      </ScrollView>
+                </ScrollView>
 
-      <QatarFlag size={50} />
+                {/* Fixed Column */}
+                <View style={{ 
+                  width: 100, 
+                  borderTopRightRadius: 8, 
+                  borderBottomRightRadius: 8,
+                  zIndex: 1,
+                  backgroundColor: 'white'
+                }}>
+                  <View style={{ paddingVertical: 8,marginLeft:-40}}>
+                    <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الشهر</Text>
+                  </View>
+                  {trainerData.evaluations.map((item, idx) => (
+                    <View key={idx} style={{ 
+                      backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                      paddingVertical: 8,
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#eee'
+                    }}>
+                      <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' ,marginLeft:-40}]}>
+                        شهر {item.month}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            </View>
+          </Section>
+        </ScrollView>
+
+        <View style={styles.qatarFlagContainer}>
+          <QatarFlag size={50} />
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
@@ -384,52 +441,66 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f7f7f7",
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  
+  infoContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
   scrollView: {
     flex: 1,
   },
   profileCard: {
     flexDirection: "row",
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderRadius: 15,
-    margin: 16,
-    padding: 16,
-    shadowColor: "#000",
+    padding: 8,
+    marginHorizontal: 30,
+    marginVertical: 8,
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.1,
     shadowRadius: 3.84,
-    elevation: 3,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#000',
   },
   profileInfo: {
     flex: 2,
     paddingRight: 5,
-  },
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    alignItems: "center",
-    marginBottom: 8,
+    width: '100%',
   },
   infoLabel: {
     fontFamily: "Cairo-Bold",
-    fontSize: 14,
+    fontSize: 12,
     color: Colors.text,
     marginLeft: 5,
   },
   infoValue: {
     fontFamily: "Cairo-Regular",
-    fontSize: 14,
+    fontSize: 13,
     color: Colors.textSecondary,
   },
   imageContainer: {
     flex: 1,
     alignItems: "center",
+    marginRight: 8,
   },
   trainerImage: {
-    width: 90,
-    height: 90,
+    width: 80,
+    height: 80,
     borderRadius: 5,
     borderWidth: 2,
     borderColor: "#eee",
@@ -440,10 +511,11 @@ const styles = StyleSheet.create({
     marginTop: 5,
     color: Colors.text,
     textAlign: "center",
+    fontWeight: "bold",
+    lineHeight: 20,
   },
   experienceContainer: {
-    alignItems: "center",
-    marginTop: 5,
+    marginRight:40
   },
   experienceValue: {
     fontFamily: "Cairo-Bold",
@@ -540,13 +612,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.textSecondary,
   },
+  coursesContainer: {
+    marginTop: 10,
+  },
+  coursesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
   coursesLabel: {
     fontFamily: "Cairo-Bold",
     fontSize: 14,
     color: Colors.text,
-    textAlign: "right",
-    marginTop: 10,
-    marginBottom: 8,
+    marginLeft: 10,
+  },
+  coursesList: {
+    paddingRight: 0,
+    marginTop:-7
   },
   courseItem: {
     fontFamily: "Cairo-Regular",
@@ -591,7 +674,7 @@ const styles = StyleSheet.create({
   },
   headerCell: {
     width: 120,
-    color: "white",
+    color: Colors.primary,
     fontFamily: "Cairo-Bold",
     fontSize: 14,
     textAlign: "center",
@@ -642,6 +725,12 @@ const styles = StyleSheet.create({
   rtlText: {
     textAlign: 'right',
     writingDirection: 'rtl',
+  },
+  qatarFlagContainer: {
+    position: 'absolute',
+    bottom: -30,
+    left: 0,
+    zIndex: 1000,
   },
 })
 
