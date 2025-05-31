@@ -6,6 +6,9 @@ import { SafeAreaProvider } from "react-native-safe-area-context"
 import { useFonts } from "expo-font"
 import AppNavigator from "./navigation/AppNavigator"
 import { AuthProvider } from "./contexts/AuthContext"
+import { MenuProvider } from "./contexts/MenuContext"
+import { AcademicYearProvider } from "./contexts/AcademicYearContext"
+import { CoursesProvider } from "./contexts/CoursesContext"
 import { View, Text, ActivityIndicator } from "react-native"
 import * as SplashScreen from "expo-splash-screen"
 import { useCallback, useEffect, useState } from "react"
@@ -79,10 +82,16 @@ export default function App() {
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
       <AuthProvider>
-        <NavigationContainer>
-          <StatusBar style="auto" />
-          <AppNavigator />
-        </NavigationContainer>
+        <MenuProvider>
+          <AcademicYearProvider>
+            <CoursesProvider>
+              <NavigationContainer>
+                <StatusBar style="auto" />
+                <AppNavigator />
+              </NavigationContainer>
+            </CoursesProvider>
+          </AcademicYearProvider>
+        </MenuProvider>
       </AuthProvider>
     </SafeAreaProvider>
   )

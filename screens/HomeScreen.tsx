@@ -12,29 +12,17 @@ import YearSelector from "../components/YearSelector"
 import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
-import MenuButton from "../components/MenuButton"
+import Menu from "@/components/Menu"
+import { useAcademicYear } from "../contexts/AcademicYearContext"
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">
 
 const HomeScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>()
-  const [selectedYear, setSelectedYear] = useState("2025")
-  const [selectedMenuButton, setSelectedMenuButton] = useState<string | null>(null)
+  const { selectedYear, setSelectedYear, academicYears, isLoading } = useAcademicYear()
   const scrollY = useRef(new Animated.Value(0)).current
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0.95)).current
-type Props = {
-  size?: number;
-};
 
-const QatarFlag = ({ size = 40 }: Props) => {
-  return (
-    <Image
-      source={require("../assets/images/qatar-flag.png")}
-      style={{ width: size, height: size, resizeMode: "contain" }}
-    />
-  );
-};
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -49,27 +37,6 @@ const QatarFlag = ({ size = 40 }: Props) => {
       }),
     ]).start()
   }, [])
-
-  const handleMenuPress = (menuItem: string) => {
-    setSelectedMenuButton(menuItem)
-
-    switch (menuItem) {
-      case "trainers":
-        navigation.navigate("TrainerSpecialization")
-        break
-      case "students":
-        // Navigate to students screen
-        break
-      case "military":
-        navigation.navigate("MilitaryTrainersList")
-        break
-      case "courses":
-        navigation.navigate("Courses")
-        break
-      default:
-        break
-    }
-  }
 
   const opacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -91,33 +58,7 @@ const QatarFlag = ({ size = 40 }: Props) => {
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], { useNativeDriver: true })}
         scrollEventThrottle={16}
       >
-           <View style={styles.menuContainer}>
-        <MenuButton
-            title="الدورات"
-            icon={require("../assets/images/search.png")}
-            onPress={() => handleMenuPress("courses")}
-            isSelected={selectedMenuButton === "courses"}
-          />
-           <MenuButton
-            title="ليرايا العروض العسكرية"
-            icon={require("../assets/images/police.png")}
-            onPress={() => handleMenuPress("military")}
-            isSelected={selectedMenuButton === "military"}
-          />
-           <MenuButton
-            title="طلبة الدبلوم"
-            icon={require("../assets/images/students-icon.png")}
-            onPress={() => handleMenuPress("students")}
-            isSelected={selectedMenuButton === "students"}
-          />
-          
-          <MenuButton
-            title="المدربين"
-            icon={require("../assets/images/trainers-icon.png")}
-            onPress={() => handleMenuPress("trainers")}
-            isSelected={selectedMenuButton === "trainers"}
-          />
-        </View>
+        <Menu/>
         <Animated.View
           style={[
             styles.mainContent,
@@ -129,9 +70,14 @@ const QatarFlag = ({ size = 40 }: Props) => {
         >
           <Card style={styles.blueCard}>
             <YearSelector
-              currentYear={selectedYear}
-              onYearChange={setSelectedYear}
-              years={["2023", "2024", "2025", "2026"]}
+              currentYear={selectedYear?.name || ""}
+              onYearChange={(yearName) => {
+                const year = academicYears.find(y => y.name === yearName)
+                if (year) {
+                  setSelectedYear(year)
+                }
+              }}
+              years={academicYears.map(year => year.name)}
             />
 
             <Animated.View style={[styles.instituteImageContainer, { opacity: fadeAnim }]}>
@@ -142,7 +88,6 @@ const QatarFlag = ({ size = 40 }: Props) => {
               />
               <View style={styles.imageOverlay}>
                 <Text style={styles.instituteText}>معهد الشرطة - الدوحة</Text>
-                <Text style={styles.instituteSubText}>POLICE TRAINING INSTITUTE</Text>
               </View>
             </Animated.View>
           </Card>
@@ -197,6 +142,10 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  flag: {
+    resizeMode: "cover", // "cover" est mieux que "contain" pour remplir un cercle
+    backgroundColor: "transparent", // s'assure qu'il n'y a pas de fond
   },
   menuContainer: {
     flexDirection: "row",

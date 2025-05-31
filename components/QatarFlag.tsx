@@ -4,12 +4,13 @@ import type React from "react"
 
 import { useRef, useEffect } from "react"
 import { Image, StyleSheet, View, TouchableOpacity, Animated } from "react-native"
+import { RTLAnimations } from "../utils/i18n"
 
 interface QatarFlagProps {
   size?: number
 }
 
-const QatarFlag: React.FC<QatarFlagProps> = ({ size = 40 }) => {
+const QatarFlag: React.FC<QatarFlagProps> = ({ size = 60 }) => {
   const pulseAnim = useRef(new Animated.Value(1)).current
 
   useEffect(() => {
@@ -40,8 +41,15 @@ const QatarFlag: React.FC<QatarFlagProps> = ({ size = 40 }) => {
         <TouchableOpacity activeOpacity={0.7}>
           <Image
             source={require("../assets/images/qatar-flag.png")}
-            style={[styles.flag, { width: size, height: size }]}
-            resizeMode="contain"
+            style={[
+              styles.flag,
+              {
+                width: size/2,
+                height: size/2,
+                borderRadius: size / 2,
+                transform: [{ scaleX: RTLAnimations.scaleX }],
+              },
+            ]}
           />
         </TouchableOpacity>
       </Animated.View>
@@ -57,12 +65,8 @@ const styles = StyleSheet.create({
     zIndex: 100,
   },
   flag: {
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 5,
+    resizeMode: "cover",
+    backgroundColor: "transparent",
   },
 })
 

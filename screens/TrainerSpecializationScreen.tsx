@@ -12,6 +12,7 @@ import Card from "../components/Card"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import MenuButton from "../components/MenuButton"
+import Menu from "@/components/Menu"
 
 type TrainerSpecializationScreenNavigationProp = StackNavigationProp<RootStackParamList, "TrainerSpecialization">
 
@@ -63,24 +64,7 @@ const TrainerSpecializationScreen = () => {
       <Header title="المدربين" showBackButton />
 
 
-      <View style={styles.menuContainer}>
-      <MenuButton title="الدورات" icon={require("../assets/images/search.png")} onPress={() => {}} />
-        <MenuButton
-          title="ليرايا العروض العسكرية"
-          icon={require("../assets/images/police.png")}
-          onPress={() => {}}
-        />
-          <MenuButton title="طلبة الدبلوم" icon={require("../assets/images/students-icon.png")} onPress={() => {}} />
-        <MenuButton
-          title="المدربين"
-          icon={require("../assets/images/trainers-icon.png")}
-          onPress={() => {}}
-          isSelected={true}
-        />
-      
-      
-        
-      </View>
+      <Menu />
 
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
