@@ -5,9 +5,9 @@ import { View, Text, StyleSheet, TextInput, FlatList, TouchableOpacity, Image } 
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useNavigation } from "@react-navigation/native"
 import type { StackNavigationProp } from "@react-navigation/stack"
+// @ts-ignore
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
-import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import Menu from "@/components/Menu"
@@ -85,7 +85,6 @@ const MilitaryTrainersListScreen = () => {
         contentContainerStyle={styles.listContent}
       />
 
-      <QatarFlag size={50} />
     </SafeAreaView>
   )
 }

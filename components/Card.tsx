@@ -1,6 +1,6 @@
 import type React from "react"
 import type { ReactNode } from "react"
-import { View, StyleSheet, type ViewStyle } from "react-native"
+import { View, StyleSheet, type ViewStyle, Text } from "react-native"
 import Colors from "../constants/Colors"
 
 interface CardProps {

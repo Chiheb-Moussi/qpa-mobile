@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native"
 import type { StackNavigationProp } from "@react-navigation/stack"
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
-import QatarFlag from "../components/QatarFlag"
+
 import Card from "../components/Card"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
@@ -144,8 +144,6 @@ const TrainerSpecializationScreen = () => {
           </Card>
         </View>
       </ScrollView>
-
-      <QatarFlag size={50} />
     </SafeAreaView>
   )
 }
@@ -189,7 +187,8 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo-Bold",
     color: "white",
     textAlign: "right",
-    marginBottom: 20,
+    marginBottom: 10,
+    marginTop:-10
   },
   specializationList: {
     width: "100%",
@@ -200,7 +199,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.15)",
     borderRadius: 15,
-    paddingVertical: 15,
+    paddingVertical: 5,
     paddingHorizontal: 20,
   },
   specializationText: {

@@ -47,8 +47,8 @@ const Menu = () => {
         />
         <MenuButton
         title="سرايا العروض العسكرية"
-        icon={require("../assets/images/fighter-jet.png")}
-        selectedIcon={require("../assets/images/fighter-jet-white.png")}
+        icon={require("../assets/images/policemen.png")}
+        selectedIcon={require("../assets/images/policemen-white.png")}
         onPress={() => handleMenuPress("military")}
         isSelected={selectedMenuButton === "military"}
         />

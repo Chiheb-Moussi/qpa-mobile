@@ -2,8 +2,8 @@
 
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native"
 import { useNavigation, useRoute, type RouteProp } from "@react-navigation/native"
+// @ts-ignore
 import { Ionicons } from "@expo/vector-icons"
-import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 
@@ -40,7 +40,7 @@ const CourseDetailScreen = () => {
             </View>
           </View>
 
-          <QatarFlag size={40} />
+        
         </View>
       </View>
     </Modal>

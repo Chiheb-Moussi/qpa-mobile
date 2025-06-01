@@ -14,9 +14,11 @@ import {
   Animated,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
+// @ts-ignore
 import { Ionicons } from "@expo/vector-icons"
 import { useAuth } from "../contexts/AuthContext"
 import { StatusBar } from "expo-status-bar"
+import QatarFlag from "@/components/QatarFlag"
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("")
@@ -101,6 +103,7 @@ const LoginScreen = () => {
           </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <QatarFlag size={50} />
     </SafeAreaView>
   )
 }
@@ -109,6 +112,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  flag: {
+    resizeMode: "cover", // "cover" est mieux que "contain" pour remplir un cercle
+    backgroundColor: "transparent", // s'assure qu'il n'y a pas de fond
   },
   keyboardView: {
     flex: 1,

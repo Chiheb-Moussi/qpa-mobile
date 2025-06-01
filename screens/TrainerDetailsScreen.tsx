@@ -6,9 +6,9 @@ import { useState, useRef, useEffect } from "react"
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, type RouteProp } from "@react-navigation/native"
+// @ts-ignore
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
-import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import { LayoutChangeEvent } from "react-native"
@@ -428,9 +428,6 @@ const TrainerDetailsScreen = () => {
           </Section>
         </ScrollView>
 
-        <View style={styles.qatarFlagContainer}>
-          <QatarFlag size={50} />
-        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
@@ -726,12 +723,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     writingDirection: 'rtl',
   },
-  qatarFlagContainer: {
-    position: 'absolute',
-    bottom: -30,
-    left: 0,
-    zIndex: 1000,
-  },
+
 })
 
 export default TrainerDetailsScreen

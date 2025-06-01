@@ -7,7 +7,6 @@ import { useNavigation, useRoute, type RouteProp } from "@react-navigation/nativ
 import type { StackNavigationProp } from "@react-navigation/stack"
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
-import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 
@@ -126,7 +125,6 @@ const TrainersListScreen = () => {
         numColumns={3}
       />
 
-      <QatarFlag size={50} />
     </SafeAreaView>
   )
 }

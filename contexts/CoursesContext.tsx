@@ -22,7 +22,7 @@ type CoursesContextType = {
   courses: Course[];
   isLoading: boolean;
   error: string | null;
-  totalTrainers: number;
+  coursesCount: number;
   fetchCourses: () => Promise<void>;
 }
 
@@ -30,9 +30,9 @@ const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
 
 export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [coursesCount, setCoursesCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [totalTrainers, setTotalTrainers] = useState(0);
   const { selectedYear } = useAcademicYear();
 
   const formatDate = (dateString: string) => {
@@ -69,12 +69,7 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }));
 
       setCourses(formattedCourses);
-      
-      // Calculate total trainers (sum of fitness and self-defense trainer hours)
-      const total = formattedCourses.reduce((acc: number, course: Course) => {
-        return acc + (course.fitnessTrainerHours || 0) + (course.selfDefenseTrainerHours || 0);
-      }, 0);
-      setTotalTrainers(total);
+      setCoursesCount(data.totalItems);
 
     } catch (error) {
       setError('Failed to fetch courses');
@@ -96,7 +91,7 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
         courses,
         isLoading,
         error,
-        totalTrainers,
+        coursesCount,
         fetchCourses
       }}
     >
