@@ -6,9 +6,9 @@ import { useState, useRef } from "react"
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, useNavigation, type RouteProp } from "@react-navigation/native"
+// @ts-ignore
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
-import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 
@@ -102,7 +102,7 @@ const MilitaryTrainerDetailScreen = () => {
     ],
     tests: [
       {
-        name: "1-تحديد مستوى اشتباك والدفاع عن النفس",
+        name: "تحديد مستوى اشتباك والدفاع عن النفس",
         running: "13.22",
         pressure: "50",
         stomach: "48",
@@ -110,7 +110,7 @@ const MilitaryTrainerDetailScreen = () => {
         rating: "جيد جدا",
       },
       {
-        name: "2-اختبار نهائي لدورة الاشتباك والدفاع عن النفس",
+        name: "اختبار نهائي لدورة الاشتباك والدفاع عن النفس",
         running: "13.22",
         pressure: "57",
         stomach: "52",
@@ -118,7 +118,7 @@ const MilitaryTrainerDetailScreen = () => {
         rating: "ممتاز",
       },
       {
-        name: "3-تحديد مستوى دورة إعداد عارضين",
+        name: "3تحديد مستوى دورة إعداد عارضين",
         running: "17.22",
         pressure: "33",
         stomach: "44",
@@ -302,7 +302,7 @@ const MilitaryTrainerDetailScreen = () => {
                       borderBottomColor: '#eee'
                     }}>
                       <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' ,paddingRight:10}]}>
-                        -{course.name}
+                        {course.name}
                       </Text>
                     </View>
                   ))}
@@ -483,7 +483,7 @@ const MilitaryTrainerDetailScreen = () => {
         </ScrollView>
 
         <View style={styles.qatarFlagContainer}>
-          <QatarFlag size={50} />
+         
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -616,12 +616,7 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingVertical: 5
   },
-  qatarFlagContainer: {
-    position: 'absolute',
-    bottom: -30,
-    left: 0,
-    zIndex: 1000,
-  },
+
 })
 
 export default MilitaryTrainerDetailScreen

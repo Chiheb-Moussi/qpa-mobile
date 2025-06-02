@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, Image, Animated } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useNavigation } from "@react-navigation/native"
 import type { StackNavigationProp } from "@react-navigation/stack"
+// @ts-ignore
 import { MaterialCommunityIcons } from "@expo/vector-icons"
 import Header from "../components/Header"
 import Card from "../components/Card"
@@ -14,11 +15,13 @@ import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import Menu from "@/components/Menu"
 import { useAcademicYear } from "../contexts/AcademicYearContext"
+import { useCourses } from "@/contexts/CoursesContext"
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">
 
 const HomeScreen = () => {
   const { selectedYear, setSelectedYear, academicYears, isLoading } = useAcademicYear()
+  const { coursesCount } = useCourses()
   const scrollY = useRef(new Animated.Value(0)).current
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0.95)).current
@@ -86,9 +89,7 @@ const HomeScreen = () => {
                 style={styles.instituteImage}
                 resizeMode="cover"
               />
-              <View style={styles.imageOverlay}>
-                <Text style={styles.instituteText}>معهد الشرطة - الدوحة</Text>
-              </View>
+             
             </Animated.View>
           </Card>
 
@@ -121,7 +122,7 @@ const HomeScreen = () => {
                 </View>
                 <View style={styles.statItem}>
                   <MaterialCommunityIcons name="book-open-variant" size={28} color={Colors.primary} />
-                  <Text style={styles.statNumber}>42</Text>
+                  <Text style={styles.statNumber}>{coursesCount}</Text>
                   <Text style={styles.statLabel}>الدورات</Text>
                 </View>
               </View>
@@ -130,7 +131,6 @@ const HomeScreen = () => {
         </Animated.View>
       </Animated.ScrollView>
 
-      <QatarFlag size={50} />
     </SafeAreaView>
   )
 }
@@ -143,10 +143,7 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  flag: {
-    resizeMode: "cover", // "cover" est mieux que "contain" pour remplir un cercle
-    backgroundColor: "transparent", // s'assure qu'il n'y a pas de fond
-  },
+
   menuContainer: {
     flexDirection: "row",
     justifyContent: "space-around",

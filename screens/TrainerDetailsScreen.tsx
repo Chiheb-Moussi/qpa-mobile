@@ -6,9 +6,9 @@ import { useState, useRef, useEffect } from "react"
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, type RouteProp } from "@react-navigation/native"
+// @ts-ignore
 import { Ionicons } from "@expo/vector-icons"
 import Header from "../components/Header"
-import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import { LayoutChangeEvent } from "react-native"
@@ -311,9 +311,9 @@ const TrainerDetailsScreen = () => {
                     }}>
                       <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
                       <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
-                      <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>عدد الساعات المنجزة</Text>
+                      <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>الساعات المنجزة</Text>
                       <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
-                      <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>عدد ساعات الدورة</Text>
+                      <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>ساعات الدورة</Text>
                     </View>
                     {/* Rows */}
                     {trainerData.workload.map((item, idx) => (
@@ -428,9 +428,6 @@ const TrainerDetailsScreen = () => {
           </Section>
         </ScrollView>
 
-        <View style={styles.qatarFlagContainer}>
-          <QatarFlag size={50} />
-        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
@@ -726,12 +723,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     writingDirection: 'rtl',
   },
-  qatarFlagContainer: {
-    position: 'absolute',
-    bottom: -30,
-    left: 0,
-    zIndex: 1000,
-  },
+
 })
 
 export default TrainerDetailsScreen

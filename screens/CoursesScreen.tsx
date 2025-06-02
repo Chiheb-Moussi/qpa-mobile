@@ -6,7 +6,6 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { useNavigation } from "@react-navigation/native"
 import type { StackNavigationProp } from "@react-navigation/stack"
 import Header from "../components/Header"
-import QatarFlag from "../components/QatarFlag"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import Colors from "../constants/Colors"
 import Menu from "@/components/Menu"
@@ -28,7 +27,7 @@ const CoursesScreen = () => {
   }, [fadeAnim])
 
   const handleCoursePress = (course: any) => {
-    if (course.status === "مأجلة") {
+    if (course.status === "مؤجلة") {
       navigation.navigate("CourseDetail", { course })
     }
   }
@@ -113,7 +112,6 @@ const CoursesScreen = () => {
         </Animated.View>
       </ScrollView>
 
-      <QatarFlag size={50} />
     </SafeAreaView>
   )
 }
