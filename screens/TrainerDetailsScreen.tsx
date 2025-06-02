@@ -295,71 +295,140 @@ const TrainerDetailsScreen = () => {
             </View>
           </Section>
 
-          <Section title="العبء الوظيفي">
-            <View style={{ padding: 16 }}>
-              <View style={{ flexDirection: 'row' }}>
-                {/* Scrollable Columns */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-                  <View>
-                    {/* Header */}
-                    <View style={{ 
-                      flexDirection: 'row', 
-                    
-                      borderTopLeftRadius: 8, 
-                      borderBottomLeftRadius: 8,
-                      paddingVertical: 8
-                    }}>
-                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
-                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
-                      <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>الساعات المنجزة</Text>
-                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
-                      <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>ساعات الدورة</Text>
-                    </View>
-                    {/* Rows */}
-                    {trainerData.workload.map((item, idx) => (
-                      <View key={idx} style={{ 
-                        flexDirection: 'row', 
-                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
-                        paddingVertical: 8,
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#eee'
-                      }}>
-                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
-                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.cases}</Text>
-                        <Text style={[styles.cell, { width: 120, color: Colors.text, textAlign: 'center' }]}>{item.supervised}</Text>
-                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.role}</Text>
-                        <Text style={[styles.cell, { width: 100, color: Colors.text, textAlign: 'center' }]}>{item.hours}</Text>
-                      </View>
-                    ))}
-                  </View>
-                </ScrollView>
+ 
+<Section title="العبء الوظيفي">
+  <View style={{ padding: 16 }}>
+    <View style={{ flexDirection: 'row' }}>
+      {/* Scrollable Columns */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+        <View>
+          {/* Header */}
+          <View style={{
+            flexDirection: 'row',
+            borderTopLeftRadius: 8,
+            borderBottomLeftRadius: 8,
+            paddingVertical: 8
+          }}>
+            <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
+            <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
+            <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>الساعات المنجزة</Text>
+            <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
+            <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>ساعات الدورة</Text>
+          </View>
 
-                {/* Fixed Column */}
-                <View style={{ 
-                  width: 140, 
-                  borderTopRightRadius: 8, 
-                  borderBottomRightRadius: 8,
-                  zIndex: 1
-                }}>
-                  <View style={{ paddingVertical: 8 }}>
-                    <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الدورة</Text>
-                  </View>
-                  {trainerData.workload.map((item, idx) => (
-                    <View key={idx} style={{ 
-                      backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
-                      paddingVertical: 8,
-                      borderBottomWidth: 1,
-                      borderBottomColor: '#eee'
-                    }}>
-                      <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
-                        {item.course}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              </View>
+          {/* Rows */}
+          {trainerData.workload.map((item, idx) => (
+            <View key={idx} style={{
+              flexDirection: 'row',
+              backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+              paddingVertical: 8,
+              borderBottomWidth: 1,
+              borderBottomColor: '#eee'
+            }}>
+              <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
+              <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.cases}</Text>
+              <Text style={[styles.cell, { width: 120, color: Colors.text, textAlign: 'center' }]}>{item.supervised}</Text>
+              <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.role}</Text>
+              <Text style={[styles.cell, { width: 100, color: Colors.text, textAlign: 'center' }]}>{item.hours}</Text>
             </View>
-          </Section>
+          ))}
+        </View>
+      </ScrollView>
+
+      {/* Fixed Column */}
+      <View style={{
+        width: 140,
+        borderTopRightRadius: 8,
+        borderBottomRightRadius: 8,
+        zIndex: 1
+      }}>
+        <View style={{ paddingVertical: 8 }}>
+          <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الدورة</Text>
+        </View>
+        {trainerData.workload.map((item, idx) => (
+          <View key={idx} style={{
+            backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+            paddingVertical: 8,
+            borderBottomWidth: 1,
+            borderBottomColor: '#eee'
+          }}>
+            <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
+              {item.course}
+            </Text>
+          </View>
+        ))}
+      </View>
+    </View>
+
+    {/* Totals under the table */}
+    <View style={{
+      marginTop: 16,
+      padding: 12,
+      backgroundColor: '#e6f0ff',
+      borderRadius: 8,
+      flexDirection: 'column',
+      gap: 8
+    }}>
+      {/* Supervision Total */}
+      <View style={{
+  width: '100%',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginTop: 12
+}}>
+ 
+
+  {/* Badge à droite */}
+  <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  }}>
+    <Text style={{ color: 'white', fontWeight: 'bold' }}>
+      {trainerData.workload.reduce((sum, item) => sum + (Number(item.supervised) || 0), 0)} ساعة
+    </Text>
+  </View>
+   {/* Texte à gauche */}
+   <Text style={{ color: Colors.text, fontWeight: 'bold' }}>
+    عدد ساعات الإشراف
+  </Text>
+</View>
+
+
+{/* Training Total */}
+<View style={{
+  width: '100%',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginTop: 8
+}}>
+
+
+  {/* Badge à droite */}
+  <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4
+  }}>
+    <Text style={{ color: 'white', fontWeight: 'bold' }}>
+      {trainerData.workload.reduce((sum, item) => sum + (Number(item.hours) || 0), 0)} ساعة
+    </Text>
+  </View>
+    {/* Texte à gauche */}
+    <Text style={{ color: Colors.text, fontWeight: 'bold' }}>
+    عدد الساعات التدريبية
+  </Text>
+</View>
+
+    </View>
+  </View>
+</Section>
+
+
 
           <Section title="الإختبارات و الوزن الشهري">
             <View style={{ padding: 16 }}>

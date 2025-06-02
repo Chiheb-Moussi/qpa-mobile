@@ -1,8 +1,8 @@
 import { I18nManager, TextStyle } from 'react-native';
 
 // Forcer le mode RTL
-I18nManager.allowRTL(true);
-I18nManager.forceRTL(true);
+I18nManager.allowRTL(false);
+I18nManager.forceRTL(false);
 
 // Configuration des styles RTL
 export const RTLStyles: TextStyle = {

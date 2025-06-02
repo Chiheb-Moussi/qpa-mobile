@@ -236,11 +236,13 @@ const MilitaryTrainerDetailScreen = () => {
                 </View>
               </View>
               <View style={styles.infoRow}>
-                <View style={[styles.infoContent, { marginRight: 20 }]}>
+                <View style={[styles.infoContent,{flex:1}]}>
                   <Text style={styles.infoValue}>{trainerData.weight}</Text>
                   <Text style={styles.infoLabel}>الوزن:</Text>
                 </View>
-                <View style={styles.infoContent}>
+                </View>
+                <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { flex: 1 }]}>
                   <Text style={styles.infoValue}>{trainerData.height}</Text>
                   <Text style={styles.infoLabel}>الطول:</Text>
                 </View>
@@ -259,7 +261,7 @@ const MilitaryTrainerDetailScreen = () => {
                       flexDirection: 'row', 
                       borderTopLeftRadius: 8, 
                       borderBottomLeftRadius: 8,
-                      paddingVertical: 8
+                      paddingVertical:8
                     }}>
                       <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الرتبة</Text>
                       <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
@@ -273,7 +275,8 @@ const MilitaryTrainerDetailScreen = () => {
                         backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
                         paddingVertical: 8,
                         borderBottomWidth: 1,
-                        borderBottomColor: '#eee'
+                        borderBottomColor: '#eee',
+                        height:35
                       }}>
                         <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{course.rating}</Text>
                         <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{course.result}</Text>
@@ -291,7 +294,7 @@ const MilitaryTrainerDetailScreen = () => {
                   borderBottomRightRadius: 8,
                   zIndex: 1
                 }}>
-                  <View style={{ paddingVertical: 8 }}>
+                  <View style={{ paddingVertical: 8}}>
                     <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>اسم الدورة</Text>
                   </View>
                   {trainerData.courses.map((course, idx) => (
@@ -299,7 +302,8 @@ const MilitaryTrainerDetailScreen = () => {
                       backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
                       paddingVertical: 8,
                       borderBottomWidth: 1,
-                      borderBottomColor: '#eee'
+                      borderBottomColor: '#eee',
+                      height:35
                     }}>
                       <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' ,paddingRight:10}]}>
                         {course.name}
