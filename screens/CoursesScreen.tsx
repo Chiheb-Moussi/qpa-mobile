@@ -27,7 +27,7 @@ const CoursesScreen = () => {
   }, [fadeAnim])
 
   const handleCoursePress = (course: any) => {
-    if (course.status === "مأجلة") {
+    if (course.status === "مؤجلة") {
       navigation.navigate("CourseDetail", { course })
     }
   }

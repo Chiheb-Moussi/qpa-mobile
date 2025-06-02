@@ -311,9 +311,9 @@ const TrainerDetailsScreen = () => {
                     }}>
                       <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
                       <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
-                      <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>عدد الساعات المنجزة</Text>
+                      <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>الساعات المنجزة</Text>
                       <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
-                      <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>عدد ساعات الدورة</Text>
+                      <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>ساعات الدورة</Text>
                     </View>
                     {/* Rows */}
                     {trainerData.workload.map((item, idx) => (

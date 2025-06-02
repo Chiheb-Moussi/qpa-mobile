@@ -15,7 +15,7 @@ export type RootStackParamList = {
   Login: undefined
   Home: undefined
   TrainerSpecialization: undefined
-  TrainersList: { specializationType: string }
+  TrainersList: { trainerTypeCode: string, trainerTypeName: string }
   TrainerDetails: { trainerId: string }
   Courses: undefined
   CourseDetail: { course: any }

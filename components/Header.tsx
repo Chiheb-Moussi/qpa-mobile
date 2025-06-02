@@ -2,12 +2,11 @@
 
 import type React from "react"
 import { useRef, useEffect, useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, Animated, StatusBar, Modal, TouchableWithoutFeedback } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, Animated, StatusBar, Modal, TouchableWithoutFeedback, Platform, I18nManager } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { Ionicons } from "@expo/vector-icons"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import Colors from "../constants/Colors"
-import { RTLIcons } from "../utils/i18n"
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import type { RootStackParamList } from "../navigation/AppNavigator"
 import { useAuth } from "../contexts/AuthContext"
@@ -16,11 +15,13 @@ interface HeaderProps {
   title: string
   showBackButton?: boolean
   showProfileButton?: boolean
+  showMenuButton?: boolean
+  onMenuPress?: () => void
 }
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>
 
-const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, showProfileButton = true }) => {
+const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, showProfileButton = true, showMenuButton = false, onMenuPress }) => {
   const navigation = useNavigation<NavigationProp>()
   const { logout } = useAuth()
   const insets = useSafeAreaInsets()
@@ -54,6 +55,9 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, showProf
     setShowDropdown(!showDropdown)
   }
 
+  const backIcon = Platform.OS === 'ios' ? 'chevron-back' : 'arrow-back'
+  const isRTL = I18nManager.isRTL
+
   return (
     <Animated.View
       style={[
@@ -70,7 +74,11 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, showProf
       <View style={styles.leftContainer}>
         {showBackButton && (
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name={RTLIcons.back} size={24} color={Colors.primary} />
+            <Ionicons 
+              name={isRTL ? 'chevron-forward' : backIcon} 
+              size={24} 
+              color={Colors.text} 
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -78,6 +86,11 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, showProf
       <Text style={styles.title}>{title}</Text>
 
       <View style={styles.rightContainer}>
+        {showMenuButton && (
+          <TouchableOpacity onPress={onMenuPress} style={styles.menuButton}>
+            <Ionicons name="menu" size={24} color={Colors.text} />
+          </TouchableOpacity>
+        )}
         {showProfileButton && (
           <TouchableOpacity onPress={toggleDropdown} style={styles.profileButton}>
             <Ionicons name="person-circle-outline" size={28} color={Colors.primary} />
@@ -93,7 +106,10 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, showProf
       >
         <TouchableWithoutFeedback onPress={() => setShowDropdown(false)}>
           <View style={styles.modalOverlay}>
-            <View style={styles.dropdownContainer}>
+            <View style={[
+              styles.dropdownContainer,
+              { right: isRTL ? 16 : undefined, left: isRTL ? undefined : 16 }
+            ]}>
               <TouchableOpacity 
                 style={styles.dropdownItem}
                 onPress={handleLogout}
@@ -122,23 +138,27 @@ const styles = StyleSheet.create({
   },
   leftContainer: {
     width: 40,
-    alignItems: "flex-end",
+    alignItems: "flex-start",
   },
   rightContainer: {
     width: 40,
+    alignItems: "flex-end",
   },
   title: {
-    fontSize: 20,
-    fontFamily: "Cairo-Bold",
-    color: Colors.text,
-    textAlign: "center",
     flex: 1,
+    textAlign: "center",
+    fontSize: 18,
+    color: Colors.text,
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Cairo-SemiBold',
   },
   backButton: {
-    padding: 4,
+    padding: 8,
   },
   profileButton: {
     padding: 5,
+  },
+  menuButton: {
+    padding: 8,
   },
   modalOverlay: {
     flex: 1,
@@ -147,7 +167,6 @@ const styles = StyleSheet.create({
   dropdownContainer: {
     position: 'absolute',
     top: 60,
-    right: 16,
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 8,
@@ -171,7 +190,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   dropdownText: {
-    fontFamily: 'Cairo-Regular',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Cairo-Regular',
     fontSize: 16,
     color: Colors.text,
   },

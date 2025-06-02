@@ -102,7 +102,7 @@ const MilitaryTrainerDetailScreen = () => {
     ],
     tests: [
       {
-        name: "1-تحديد مستوى اشتباك والدفاع عن النفس",
+        name: "تحديد مستوى اشتباك والدفاع عن النفس",
         running: "13.22",
         pressure: "50",
         stomach: "48",
@@ -110,7 +110,7 @@ const MilitaryTrainerDetailScreen = () => {
         rating: "جيد جدا",
       },
       {
-        name: "2-اختبار نهائي لدورة الاشتباك والدفاع عن النفس",
+        name: "اختبار نهائي لدورة الاشتباك والدفاع عن النفس",
         running: "13.22",
         pressure: "57",
         stomach: "52",
@@ -118,7 +118,7 @@ const MilitaryTrainerDetailScreen = () => {
         rating: "ممتاز",
       },
       {
-        name: "3-تحديد مستوى دورة إعداد عارضين",
+        name: "3تحديد مستوى دورة إعداد عارضين",
         running: "17.22",
         pressure: "33",
         stomach: "44",
@@ -302,7 +302,7 @@ const MilitaryTrainerDetailScreen = () => {
                       borderBottomColor: '#eee'
                     }}>
                       <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' ,paddingRight:10}]}>
-                        -{course.name}
+                        {course.name}
                       </Text>
                     </View>
                   ))}
