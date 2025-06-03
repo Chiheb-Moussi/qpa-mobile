@@ -364,6 +364,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#eee",
+    paddingVertical: 6,
   },
   searchInput: {
     flex: 1,

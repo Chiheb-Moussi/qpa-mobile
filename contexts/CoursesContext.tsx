@@ -48,28 +48,43 @@ export const CoursesProvider: React.FC<{ children: React.ReactNode }> = ({ child
     try {
       setIsLoading(true);
       setError(null);
-      const response = await fetch('https://qpa-api.starlightwebsolutions.com/api/courses?page=1');
-      const data = await response.json();
+      let allCourses: Course[] = [];
+      let currentPage = 1;
+      let hasMorePages = true;
 
-      const formattedCourses = data.member.map((course: any) => ({
-        id: course.id,
-        name: course.courseName,
-        date: formatDate(course.startDate),
-        status: course.status,
-        duration: formatDuration(course.courseDuration || 0),
-        program: "مرفق", // Default value as it's not in the API
-        startDate: course.startDate,
-        endDate: course.endDate,
-        fitnessTrainerHours: course.fitnessTrainerHours,
-        selfDefenseTrainerHours: course.selfDefenseTrainerHours,
-        fitnessTrainerEvaluation: course.fitnessTrainerEvaluation,
-        selfDefenseTrainerEvaluation: course.selfDefenseTrainerEvaluation,
-        alternativeStartDate: formatDate(course.alternativeStartDate),
-        alternativeEndDate: formatDate(course.alternativeEndDate)   
-      }));
+      while (hasMorePages) {
+        const response = await fetch(`https://qpa-api.starlightwebsolutions.com/api/courses?page=${currentPage}`);
+        const data = await response.json();
 
-      setCourses(formattedCourses);
-      setCoursesCount(data.totalItems);
+        const formattedCourses = data.member.map((course: any) => ({
+          id: course.id,
+          name: course.courseName,
+          date: formatDate(course.startDate),
+          status: course.status,
+          duration: formatDuration(course.courseDuration || 0),
+          program: "مرفق", // Default value as it's not in the API
+          startDate: course.startDate,
+          endDate: course.endDate,
+          fitnessTrainerHours: course.fitnessTrainerHours,
+          selfDefenseTrainerHours: course.selfDefenseTrainerHours,
+          fitnessTrainerEvaluation: course.fitnessTrainerEvaluation,
+          selfDefenseTrainerEvaluation: course.selfDefenseTrainerEvaluation,
+          alternativeStartDate: formatDate(course.alternativeStartDate),
+          alternativeEndDate: formatDate(course.alternativeEndDate)   
+        }));
+
+        allCourses = [...allCourses, ...formattedCourses];
+        
+        // Vérifier s'il y a plus de pages
+        if (data.member.length === 0 || currentPage * data.itemsPerPage >= data.totalItems) {
+          hasMorePages = false;
+        } else {
+          currentPage++;
+        }
+      }
+
+      setCourses(allCourses);
+      setCoursesCount(allCourses.length);
 
     } catch (error) {
       setError('Failed to fetch courses');

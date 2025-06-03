@@ -296,7 +296,7 @@ const TrainerDetailsScreen = () => {
           </Section>
 
  
-<Section title="العبء الوظيفي">
+<Section title="العبئ الوظيفي">
   <View style={{ padding: 16 }}>
     <View style={{ flexDirection: 'row' }}>
       {/* Scrollable Columns */}
@@ -384,14 +384,15 @@ const TrainerDetailsScreen = () => {
     backgroundColor: '#007bff',
     borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 4
-  }}>
-    <Text style={{ color: 'white', fontWeight: 'bold' }}>
+    paddingVertical: 4,
+    
+    }}>
+    <Text style={{ color: 'white', fontWeight: 'bold' ,width:60}}>
       {trainerData.workload.reduce((sum, item) => sum + (Number(item.supervised) || 0), 0)} ساعة
     </Text>
   </View>
    {/* Texte à gauche */}
-   <Text style={{ color: Colors.text, fontWeight: 'bold' }}>
+   <Text style={{ color: Colors.text, fontWeight: 'bold'}}>
     عدد ساعات الإشراف
   </Text>
 </View>
@@ -412,9 +413,9 @@ const TrainerDetailsScreen = () => {
     backgroundColor: '#007bff',
     borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 4
+    paddingVertical: 4,
   }}>
-    <Text style={{ color: 'white', fontWeight: 'bold' }}>
+    <Text style={{ color: 'white', fontWeight: 'bold' ,width:60}}>
       {trainerData.workload.reduce((sum, item) => sum + (Number(item.hours) || 0), 0)} ساعة
     </Text>
   </View>
@@ -434,7 +435,11 @@ const TrainerDetailsScreen = () => {
             <View style={{ padding: 16 }}>
               <View style={{ flexDirection: 'row' }}>
                 {/* Scrollable Columns */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                <ScrollView 
+                  horizontal 
+                  showsHorizontalScrollIndicator={true}
+                  contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                >
                   <View>
                     {/* Header */}
                     <View style={{ 
@@ -443,11 +448,21 @@ const TrainerDetailsScreen = () => {
                       borderBottomLeftRadius: 8,
                       paddingVertical: 8
                     }}>
-                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
-                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>التقييم</Text>
-                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الوزن</Text>
-                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>الوزن الزائد</Text>
+                    
+                     
+                      
+                     
                       <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الملاحظة</Text>
+                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>الوزن الزائد</Text>
+                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الوزن</Text>
+                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>التقييم</Text>
+                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
+
+
+
+
+
+
                     </View>
                     {/* Rows */}
                     {trainerData.evaluations.map((item, idx) => (
@@ -458,11 +473,17 @@ const TrainerDetailsScreen = () => {
                         borderBottomWidth: 1,
                         borderBottomColor: '#eee'
                       }}>
-                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.result}</Text>
-                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
-                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.weight}</Text>
-                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.weightChange}</Text>
+                        
                         <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.note}</Text>
+                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.weightChange}</Text>
+                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.weight}</Text>
+                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
+                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.result}</Text>
+                        
+                     
+                       
+                        
+
                       </View>
                     ))}
                   </View>

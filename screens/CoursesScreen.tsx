@@ -16,6 +16,7 @@ type CoursesScreenNavigationProp = StackNavigationProp<RootStackParamList, "Cour
 const CoursesScreen = () => {
   const navigation = useNavigation<CoursesScreenNavigationProp>()
   const fadeAnim = useRef(new Animated.Value(0)).current
+  const scrollViewRef = useRef<ScrollView>(null)
   const { courses, isLoading, error } = useCourses()
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
   const [modalVisible, setModalVisible] = useState(false)
@@ -26,6 +27,11 @@ const CoursesScreen = () => {
       duration: 1000,
       useNativeDriver: true,
     }).start()
+
+    // Définir la position initiale du scroll après le rendu
+    setTimeout(() => {
+      scrollViewRef.current?.scrollTo({ x: 360, animated: false })
+    }, 100)
   }, [fadeAnim])
 
   const handleCoursePress = (course: any) => {
@@ -71,7 +77,12 @@ const CoursesScreen = () => {
 
             <View style={styles.tableContainer}>
               {/* Colonnes scrollables */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <ScrollView 
+                ref={scrollViewRef}
+                horizontal 
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ flexDirection: 'row-reverse' }}
+              >
                 <View>
                   <View style={styles.tableHeader}>
                     <Text style={styles.headerCell}>برنامج الدورة</Text>
