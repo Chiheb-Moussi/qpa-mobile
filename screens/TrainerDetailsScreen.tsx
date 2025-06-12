@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform } from "react-native"
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, type RouteProp } from "@react-navigation/native"
 // @ts-ignore
@@ -92,6 +92,208 @@ const TrainerDetailsScreen = () => {
   const route = useRoute<TrainerDetailsScreenRouteProp>()
   const { trainerId } = route.params
   const fadeAnim = useRef(new Animated.Value(0)).current
+  const [trainerData, setTrainerData] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchTrainerData()
+  }, [trainerId])
+
+  useEffect(() => {
+    if (trainerData) {
+      console.log('Rendering evaluations section with:', trainerData.evaluations)
+    }
+  }, [trainerData])
+
+  const fetchTrainerData = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      console.log('Fetching trainer with ID:', trainerId)
+      
+      const response = await fetch(`https://qpa-api.starlightwebsolutions.com/api/trainers/${trainerId}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch trainer data')
+      }
+      const data = await response.json()
+      console.log('Trainer data:', data)
+      
+      // Formater les dates
+      const formatDate = (dateString: string) => {
+        const date = new Date(dateString)
+        return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`
+      }
+
+      // Calculer l'expérience
+      const recruitmentDate = new Date(data.recruitmentDate)
+      const today = new Date()
+      const experienceYears = today.getFullYear() - recruitmentDate.getFullYear()
+
+      const specialization = data.specialization;
+
+      // Fonction pour déterminer les heures de cours en fonction de la spécialisation
+      const getCourseHours = (course: any) => {
+        if (specialization === "مدرب لياقة بدنية") {
+          return course.fitnessTrainerHours || 0;
+        } else if (specialization === "مدرب دفاع عن النفس") {
+          return course.selfDefenseTrainerHours || 0;
+        }
+        return 0;
+      }
+
+      // Fonction pour déterminer l'évaluation en fonction de la spécialisation
+      const getCourseEvaluation = (course: any) => {
+        if (specialization === "مدرب لياقة بدنية") {
+          return course.fitnessTrainerEvaluation || "---";
+        } else if (specialization === "مدرب دفاع عن النفس") {
+          return course.selfDefenseTrainerEvaluation || "---";
+        }
+        return "---";
+      }
+
+      // Formater les cours
+      const formattedCourses = data.courseStatuses.map((status: any) => ({
+        id: status.course.id,
+        name: status.course.courseName,
+        startDate: formatDate(status.course.startDate),
+        endDate: formatDate(status.course.endDate),
+        duration: status.course.courseDuration,
+        status: status.course.status,
+        role: status.missions,
+        hours: status.completedHours,
+        courseHours: getCourseHours(status.course),
+        evaluation: getCourseEvaluation(status.course),
+        absence: parseInt(status.absence),
+        exemption: parseInt(status.exemption),
+        medicalLeave: parseInt(status.medicalLeave),
+        permission: parseInt(status.permission),
+        annualTest: parseInt(status.annualTest),
+        delay: parseInt(status.delay),
+        clinicVisit: parseInt(status.clinicVisit),
+        vacation: parseInt(status.vacation),
+        other: parseInt(status.other),
+      }))
+
+      // Traiter les stages
+      const uniqueInternshipNames = new Set<string>()
+      data.internships.forEach((internship: any) => {
+        const names = internship.nameInternships.split("/")
+        names.forEach((name: string) => {
+          const trimmedName = name.trim()
+          if (trimmedName) {
+            uniqueInternshipNames.add(trimmedName)
+          }
+        })
+      })
+      const formattedInternships = Array.from(uniqueInternshipNames)
+
+      // Récupérer les évaluations
+      console.log('Fetching evaluations for trainer:', trainerId)
+      try {
+        // Récupérer toutes les évaluations du formateur
+        const evaluationPromises = data.evaluations.map(async (evaluationUrl: string) => {
+          const evaluationId = evaluationUrl.split('/').pop()
+          const evaluationResponse = await fetch(`https://qpa-api.starlightwebsolutions.com/api/evaluations/${evaluationId}`)
+          if (!evaluationResponse.ok) {
+            throw new Error(`Failed to fetch evaluation ${evaluationId}`)
+          }
+          return evaluationResponse.json()
+        })
+
+        const evaluationsData = await Promise.all(evaluationPromises)
+        console.log('Raw evaluations response:', evaluationsData)
+
+        const trainerDataToSet = {
+          id: data.id,
+          name: data.fullName,
+          nationality: data.nationality,
+          position: data.jobTitle,
+          militaryId: data.militaryNumber,
+          birthDate: formatDate(data.birthDate),
+          appointmentDate: formatDate(data.recruitmentDate),
+          experience: `${experienceYears} سنة`,
+          specialization: data.specialization,
+          email: data.email,
+          phone: data.phone,
+          image: data.photo ? { uri: `https://qatar-police-academy.starlightwebsolutions.com${data.photo}` } : require("../assets/images/default-user.png"),
+          education: {
+            level: data.educationLevel,
+            specialization: data.academicSpecialty,
+          },
+          courses: formattedCourses,
+          workload: formattedCourses.map((course: any) => {
+            const totalCases = course.absence + course.exemption + course.medicalLeave + course.permission + course.annualTest + course.delay + course.clinicVisit + course.vacation + course.other
+            return {
+              course: course.name,
+              hours: course.hours,
+              courseHours: course.courseHours,
+              traininghours: course.role !== "مشرف" ? course.hours : 0,
+              role: course.role,
+              supervisedHours: course.role === "مشرف" ? course.hours : 0,
+              cases: totalCases > 0 ? totalCases : "--",
+              evaluation: course.evaluation
+            }
+          }),
+          evaluations: evaluationsData,
+          internships: formattedInternships,
+          department: data.department,
+          rank: data.rank,
+          height: data.height,
+          idealWeight: data.idealWeight
+        }
+        
+        console.log('Setting trainer data with evaluations:', trainerDataToSet.evaluations)
+        setTrainerData(trainerDataToSet)
+      } catch (error) {
+        console.error('Error fetching evaluations:', error)
+        // Continuer avec les données du formateur même si l'évaluation échoue
+        setTrainerData({
+          id: data.id,
+          name: data.fullName,
+          nationality: data.nationality,
+          position: data.jobTitle,
+          militaryId: data.militaryNumber,
+          birthDate: formatDate(data.birthDate),
+          appointmentDate: formatDate(data.recruitmentDate),
+          experience: `${experienceYears} سنة`,
+          specialization: data.specialization,
+          email: data.email,
+          phone: data.phone,
+          image: data.photo ? { uri: `https://qatar-police-academy.starlightwebsolutions.com${data.photo}` } : require("../assets/images/default-user.png"),
+          education: {
+            level: data.educationLevel,
+            specialization: data.academicSpecialty,
+          },
+          courses: formattedCourses,
+          workload: formattedCourses.map((course: any) => {
+            const totalCases = course.absence + course.exemption + course.medicalLeave + course.permission + course.annualTest + course.delay + course.clinicVisit + course.vacation + course.other
+            return {
+              course: course.name,
+              hours: course.hours,
+              courseHours: course.courseHours,
+              traininghours: course.role !== "مشرف" ? course.hours : 0,
+              role: course.role,
+              supervisedHours: course.role === "مشرف" ? course.hours : 0,
+              cases: totalCases > 0 ? totalCases : "--",
+              evaluation: course.evaluation
+            }
+          }),
+          evaluations: [],
+          internships: formattedInternships,
+          department: data.department,
+          rank: data.rank,
+          height: data.height,
+          idealWeight: data.idealWeight
+        })
+      }
+    } catch (error) {
+      setError('Failed to load trainer data')
+      console.error('Error fetching trainer data:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -101,86 +303,26 @@ const TrainerDetailsScreen = () => {
     }).start()
   }, [])
 
-  // This would normally come from an API based on trainerId
-  const trainerData = {
-    id: "4",
-    name: "محمد خالد الصدفي",
-    nationality: "تونسي",
-    position: "مدرب عملي ثالث",
-    militaryId: "17208",
-    birthDate: "17/08/1988",
-    appointmentDate: "18-06-2013",
-    experience: "11 سنة",
-    specialization: "مدرب لياقة",
-    email: "sadfikh1988@gmail.com",
-    phone: "97466824019",
-    image: require("../assets/images/trainer.png"),
-    education: {
-      level: "بكالوريوس",
-      specialization: "سباحة+مصارعة",
-    },
-    courses: [
-      "دورة إعداد مدربين اللياقة",
-      "دورة إعداد مدربين الإشتباك و الدفاع عن النفس",
-      "دورة غطس و إنقاذ",
-      "دورة إسعافات أولية",
-      "دورة إنشاء البرامج التدريبية",
-      "دورة إعلامية",
-    ],
-    workload: [
-      {
-        course: "الدوريات الأمنية",
-        hours: 20,
-        role: "مشرف",
-        supervised: 20,
-        cases: 0,
-        evaluation: "---",
-      },
-      {
-        course: "دورة التدخل السريع",
-        hours: 25,
-        role: "مدرب",
-        supervised: 20,
-        cases: 5,
-        evaluation: "---",
-      },
-      {
-        course: 'دورة دبلوم "دفعة1"',
-        hours: 60,
-        role: "تعويض",
-        supervised: 5,
-        cases: 0,
-        evaluation: "---",
-      },
-    ],
-    trainingHours: 25,
-    supervisionHours: 20,
-    evaluations: [
-      {
-        month: "يناير",
-        result: 99.7,
-        evaluation: "ممتاز",
-        weight: "كغ 71.3",
-        weightChange: "كغ (0.7-)",
-        note: "رشيق",
-      },
-      {
-        month: "فبراير",
-        result: 100,
-        evaluation: "ممتاز",
-        weight: "كغ 71.8",
-        weightChange: "كغ (0.5+)",
-        note: "رشيق",
-      },
-      {
-        month: "مارس",
-        result: 100,
-        evaluation: "ممتاز",
-        weight: "كغ 70",
-        weightChange: "كغ (2-)",
-        note: "رشيق",
-      },
-    ],
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title="بطاقة تعريف المدرب" showBackButton />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (error || !trainerData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title="بطاقة تعريف المدرب" showBackButton />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error || 'Failed to load trainer data'}</Text>
+        </View>
+      </SafeAreaView>
+    )
   }
 
   return (
@@ -245,7 +387,7 @@ const TrainerDetailsScreen = () => {
               </View>
               <View style={styles.infoRow}>
                 <View style={[styles.infoContent, { marginRight: 20 }]}>
-                  <Text style={styles.infoValue}>{trainerData.experience.split(" ")[0]} سنة</Text>
+                  <Text style={styles.infoValue}>{trainerData.experience}</Text>
                   <Text style={styles.infoLabel}>سنوات الخبرة :</Text>
                 </View>
                 <View style={styles.infoContent}>
@@ -279,245 +421,252 @@ const TrainerDetailsScreen = () => {
                 <Text style={styles.educationLabel}>الإختصاص:</Text>
               </View>
 
-              <View style={styles.coursesContainer}>
+              {/* <View style={styles.coursesContainer}>
                 <View style={styles.coursesHeader}>
-                  <Text style={styles.courseItem}>- {trainerData.courses[0]}</Text>
+                  <Text style={styles.courseItem}>- {trainerData.courses[0].name}</Text>
                   <Text style={styles.coursesLabel}>الدورات:</Text>
                 </View>
                 <View style={styles.coursesList}>
-                  {trainerData.courses.slice(1).map((course, index) => (
+                  {trainerData.courses.slice(1).map((course: any, index: number) => (
                     <Text key={index} style={[styles.courseItem, { paddingRight: 50 }]}>
-                      - {course}
+                      - {course.name}
                     </Text>
                   ))}
                 </View>
-              </View>
+              </View> */}
+
+              {trainerData.internships.length > 0 && (
+                <View style={styles.coursesContainer}>
+                  <View style={styles.coursesHeader}>
+                    <Text style={styles.courseItem}>- {trainerData.internships[0]}</Text>
+                    <Text style={styles.coursesLabel}>الدورات:</Text>
+                  </View>
+                  <View style={styles.coursesList}>
+                    {trainerData.internships.slice(1).map((internship: string, index: number) => (
+                      <Text key={index} style={[styles.courseItem, { paddingRight: 50 }]}>
+                        - {internship}
+                      </Text>
+                    ))}
+                  </View>
+                </View>
+              )}
             </View>
           </Section>
 
- 
-<Section title="العبئ الوظيفي">
-  <View style={{ padding: 16 }}>
-    <View style={{ flexDirection: 'row' }}>
-      {/* Scrollable Columns */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={true}>
-        <View>
-          {/* Header */}
-          <View style={{
-            flexDirection: 'row',
-            borderTopLeftRadius: 8,
-            borderBottomLeftRadius: 8,
-            paddingVertical: 8
-          }}>
-            <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
-            <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
-            <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>الساعات المنجزة</Text>
-            <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
-            <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>ساعات الدورة</Text>
-          </View>
+          {trainerData.workload.length > 0 && (
+            <Section title="العبئ الوظيفي">
+              <View style={{ padding: 16 }}>
+                <View style={{ flexDirection: 'row' }}>
+                  {/* Scrollable Columns */}
+                  <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                    <View>
+                      {/* Header */}
+                      <View style={{
+                        flexDirection: 'row',
+                        borderTopLeftRadius: 8,
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8
+                      }}>
+                        <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>التقييم</Text>
+                        <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>حالات</Text>
+                        <Text style={[styles.headerCell, { width: 120, textAlign: 'center' }]}>الساعات المنجزة</Text>
+                        <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>المهام</Text>
+                        <Text style={[styles.headerCell, { width: 100, textAlign: 'center' }]}>ساعات الدورة</Text>
+                      </View>
 
-          {/* Rows */}
-          {trainerData.workload.map((item, idx) => (
-            <View key={idx} style={{
-              flexDirection: 'row',
-              backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
-              paddingVertical: 8,
-              borderBottomWidth: 1,
-              borderBottomColor: '#eee'
-            }}>
-              <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
-              <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.cases}</Text>
-              <Text style={[styles.cell, { width: 120, color: Colors.text, textAlign: 'center' }]}>{item.supervised}</Text>
-              <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.role}</Text>
-              <Text style={[styles.cell, { width: 100, color: Colors.text, textAlign: 'center' }]}>{item.hours}</Text>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-
-      {/* Fixed Column */}
-      <View style={{
-        width: 140,
-        borderTopRightRadius: 8,
-        borderBottomRightRadius: 8,
-        zIndex: 1
-      }}>
-        <View style={{ paddingVertical: 8 }}>
-          <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الدورة</Text>
-        </View>
-        {trainerData.workload.map((item, idx) => (
-          <View key={idx} style={{
-            backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
-            paddingVertical: 8,
-            borderBottomWidth: 1,
-            borderBottomColor: '#eee'
-          }}>
-            <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
-              {item.course}
-            </Text>
-          </View>
-        ))}
-      </View>
-    </View>
-
-    {/* Totals under the table */}
-    <View style={{
-      marginTop: 16,
-      padding: 12,
-      backgroundColor: '#e6f0ff',
-      borderRadius: 8,
-      flexDirection: 'column',
-      gap: 8
-    }}>
-      {/* Supervision Total */}
-      <View style={{
-  width: '100%',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginTop: 12
-}}>
- 
-
-  {/* Badge à droite */}
-  <View style={{
-    backgroundColor: '#007bff',
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    
-    }}>
-    <Text style={{ color: 'white', fontWeight: 'bold' ,width:60}}>
-      {trainerData.workload.reduce((sum, item) => sum + (Number(item.supervised) || 0), 0)} ساعة
-    </Text>
-  </View>
-   {/* Texte à gauche */}
-   <Text style={{ color: Colors.text, fontWeight: 'bold'}}>
-    عدد ساعات الإشراف
-  </Text>
-</View>
-
-
-{/* Training Total */}
-<View style={{
-  width: '100%',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginTop: 8
-}}>
-
-
-  {/* Badge à droite */}
-  <View style={{
-    backgroundColor: '#007bff',
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-  }}>
-    <Text style={{ color: 'white', fontWeight: 'bold' ,width:60}}>
-      {trainerData.workload.reduce((sum, item) => sum + (Number(item.hours) || 0), 0)} ساعة
-    </Text>
-  </View>
-    {/* Texte à gauche */}
-    <Text style={{ color: Colors.text, fontWeight: 'bold' }}>
-    عدد الساعات التدريبية
-  </Text>
-</View>
-
-    </View>
-  </View>
-</Section>
-
-
-
-          <Section title="الإختبارات و الوزن الشهري">
-            <View style={{ padding: 16 }}>
-              <View style={{ flexDirection: 'row' }}>
-                {/* Scrollable Columns */}
-                <ScrollView 
-                  horizontal 
-                  showsHorizontalScrollIndicator={true}
-                  contentContainerStyle={{ flexDirection: 'row-reverse' }}
-                >
-                  <View>
-                    {/* Header */}
-                    <View style={{ 
-                      flexDirection: 'row', 
-                      borderTopLeftRadius: 8, 
-                      borderBottomLeftRadius: 8,
-                      paddingVertical: 8
-                    }}>
-                    
-                     
-                      
-                     
-                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الملاحظة</Text>
-                      <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>الوزن الزائد</Text>
-                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الوزن</Text>
-                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>التقييم</Text>
-                      <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
-
-
-
-
-
-
+                      {/* Rows */}
+                      {trainerData.workload.map((item: any, idx: number) => (
+                        <View key={idx} style={{
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee'
+                        }}>
+                          <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
+                          <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.cases}</Text>
+                          <Text style={[styles.cell, { width: 120, color: Colors.text, textAlign: 'center' }]}>{item.hours}</Text>
+                          <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.role}</Text>
+                          <Text style={[styles.cell, { width: 100, color: Colors.text, textAlign: 'center' }]}>{item.courseHours}</Text>
+                        </View>
+                      ))}
                     </View>
-                    {/* Rows */}
-                    {trainerData.evaluations.map((item, idx) => (
-                      <View key={idx} style={{ 
-                        flexDirection: 'row', 
+                  </ScrollView>
+
+                  {/* Fixed Column */}
+                  <View style={{
+                    width: 140,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ paddingVertical: 8 }}>
+                      <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الدورة</Text>
+                    </View>
+                    {trainerData.workload.map((item: any, idx: number) => (
+                      <View key={idx} style={{
                         backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
                         paddingVertical: 8,
                         borderBottomWidth: 1,
                         borderBottomColor: '#eee'
                       }}>
-                        
-                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.note}</Text>
-                        <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{item.weightChange}</Text>
-                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.weight}</Text>
-                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.evaluation}</Text>
-                        <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.result}</Text>
-                        
-                     
-                       
-                        
-
+                        <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
+                          {item.course}
+                        </Text>
                       </View>
                     ))}
                   </View>
-                </ScrollView>
+                </View>
 
-                {/* Fixed Column */}
-                <View style={{ 
-                  width: 100, 
-                  borderTopRightRadius: 8, 
-                  borderBottomRightRadius: 8,
-                  zIndex: 1,
-                  backgroundColor: 'white'
+                {/* Totals under the table */}
+                <View style={{
+                  marginTop: 16,
+                  padding: 12,
+                  backgroundColor: '#e6f0ff',
+                  borderRadius: 8,
+                  flexDirection: 'column',
+                  gap: 8
                 }}>
-                  <View style={{ paddingVertical: 8,marginLeft:-40}}>
-                    <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الشهر</Text>
-                  </View>
-                  {trainerData.evaluations.map((item, idx) => (
-                    <View key={idx} style={{ 
-                      backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
-                      paddingVertical: 8,
-                      borderBottomWidth: 1,
-                      borderBottomColor: '#eee'
+                  {/* Supervision Total */}
+                  <View style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 12
+                  }}>
+                    {/* Badge à droite */}
+                    <View style={{
+                      backgroundColor: '#007bff',
+                      borderRadius: 16,
+                      paddingHorizontal: 12,
+                      paddingVertical: 4,
                     }}>
-                      <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' ,marginLeft:-40}]}>
-                        شهر {item.month}
+                      <Text style={{ color: 'white', fontWeight: 'bold', width: 60 }}>
+                        {trainerData.workload.reduce((sum: number, item: any) => sum + (Number(item.supervisedHours) || 0), 0)} ساعة
                       </Text>
                     </View>
-                  ))}
+                    {/* Texte à gauche */}
+                    <Text style={{ color: Colors.text, fontWeight: 'bold' }}>
+                      عدد ساعات الإشراف
+                    </Text>
+                  </View>
+
+                  {/* Training Total */}
+                  <View style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 8
+                  }}>
+                    {/* Badge à droite */}
+                    <View style={{
+                      backgroundColor: '#007bff',
+                      borderRadius: 16,
+                      paddingHorizontal: 12,
+                      paddingVertical: 4,
+                    }}>
+                      <Text style={{ color: 'white', fontWeight: 'bold', width: 60 }}>
+                        {trainerData.workload.reduce((sum: number, item: any) => sum + (Number(item.traininghours) || 0), 0)} ساعة
+                      </Text>
+                    </View>
+                    {/* Texte à gauche */}
+                    <Text style={{ color: Colors.text, fontWeight: 'bold' }}>
+                      عدد الساعات التدريبية
+                    </Text>
+                  </View>
                 </View>
               </View>
+            </Section>
+          )}
+
+          {/* Section des évaluations - toujours affichée */}
+          <Section title="الإختبارات و الوزن الشهري">
+            <View style={{ padding: 16 }}>
+              {trainerData?.evaluations && Array.isArray(trainerData.evaluations) && trainerData.evaluations.length > 0 ? (
+                <View style={{ flexDirection: 'row' }}>
+                  {/* Scrollable Columns */}
+                  <ScrollView 
+                    horizontal 
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Header */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8
+                      }}>
+                        <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الملاحظة</Text>
+                        <Text style={[styles.headerCell, { width: 80, textAlign: 'center' }]}>الوزن الزائد</Text>
+                        <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الوزن</Text>
+                        <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>التقييم</Text>
+                        <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
+                      </View>
+                      {/* Rows */}
+                      {trainerData.evaluations.map((item: any, idx: number) => {
+                        // Calculer la différence entre le poids idéal et le poids actuel
+                        const weightDifference = trainerData.idealWeight - parseFloat(item.weight)
+                        // Ajouter le signe approprié
+                        const overweight = weightDifference > 0 
+                          ? `-${weightDifference.toFixed(1)}`
+                          : `+${Math.abs(weightDifference).toFixed(1)}`
+
+                        return (
+                          <View key={idx} style={{ 
+                            flexDirection: 'row', 
+                            backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                            paddingVertical: 8,
+                            borderBottomWidth: 1,
+                            borderBottomColor: '#eee'
+                          }}>
+                            <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.remark}</Text>
+                            <Text style={[styles.cell, { width: 80, color: Colors.text, textAlign: 'center' }]}>{overweight}</Text>
+                            <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.weight}</Text>
+                            <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{item.rating}</Text>
+                            <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{parseFloat(item.result).toFixed(2)}</Text>
+                          </View>
+                        )
+                      })}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Column */}
+                  <View style={{ 
+                    width: 100, 
+                    borderTopRightRadius: 8, 
+                    borderBottomRightRadius: 8,
+                    zIndex: 1,
+                    backgroundColor: 'white'
+                  }}>
+                    <View style={{ paddingVertical: 8, marginLeft: -40 }}>
+                      <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>الشهر</Text>
+                    </View>
+                    {trainerData.evaluations.map((item: any, idx: number) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee'
+                      }}>
+                        <Text style={[styles.cell, { color: Colors.text, textAlign: 'right', marginLeft: -40 }]}>
+                          {item.month}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              ) : (
+                <Text style={{ textAlign: 'center', color: Colors.text, fontFamily: "Cairo-Regular" }}>
+                  لا توجد إختبارات متاحة
+                </Text>
+              )}
             </View>
           </Section>
         </ScrollView>
-
       </KeyboardAvoidingView>
     </SafeAreaView>
   )
@@ -813,7 +962,21 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     writingDirection: 'rtl',
   },
-
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: Colors.error,
+    fontFamily: "Cairo-Bold",
+    fontSize: 16,
+  },
 })
 
 export default TrainerDetailsScreen
