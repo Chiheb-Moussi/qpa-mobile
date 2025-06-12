@@ -161,7 +161,7 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
   const navigateToTrainerDetails = (trainerId: string) => {
     if (trainerTypeCode === "military_shows") {
         navigation.navigate("MilitaryTrainerDetail", { trainerId })
-    } else {
+    } else  if (trainerTypeCode === "student_shows") {
         navigation.navigate("TrainerDetails", { trainerId })
     }
   }
