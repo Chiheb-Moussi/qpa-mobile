@@ -789,7 +789,14 @@ interface SectionProps {
               </View>
 
               {/* Final Grade */}
-              <View >
+              <View style={{
+                  marginTop: 16,
+                  padding: 12,
+                  backgroundColor: '#e6f0ff',
+                  borderRadius: 8,
+                  flexDirection: 'column',
+                  gap: 8
+                }}>
 
                    <View style={styles.gradeRow}>
                                 <View style={{

@@ -22,9 +22,30 @@ type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, "Home">
 const HomeScreen = () => {
   const { selectedYear, setSelectedYear, academicYears, isLoading } = useAcademicYear()
   const { coursesCount } = useCourses()
+  const [countStudents, setCountStudents] = useState<number>(0)
+  const [isLoadingStudents, setIsLoadingStudents] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const scrollY = useRef(new Animated.Value(0)).current
   const fadeAnim = useRef(new Animated.Value(0)).current
   const scaleAnim = useRef(new Animated.Value(0.95)).current
+
+  const fetchStudents = async () => {
+    try {
+      setIsLoadingStudents(true)
+      setError(null)
+      const response = await fetch('https://qatar-police-academy.starlightwebsolutions.com/api/students')
+      if (!response.ok) {
+        throw new Error('Failed to fetch students')
+      }
+      const data = await response.json()
+      setCountStudents(data.length)
+    } catch (error) {
+      setError('Failed to load students')
+      console.error('Error fetching students:', error)
+    } finally {
+      setIsLoadingStudents(false)
+    }
+  }
 
   useEffect(() => {
     Animated.parallel([
@@ -39,6 +60,7 @@ const HomeScreen = () => {
         useNativeDriver: true,
       }),
     ]).start()
+    fetchStudents()
   }, [])
 
   const opacity = scrollY.interpolate({
@@ -115,11 +137,11 @@ const HomeScreen = () => {
                   <Text style={styles.statNumber}>145</Text>
                   <Text style={styles.statLabel}>المدربين</Text>
                 </View>
-                <View style={styles.statItem}>
+                {!isLoadingStudents && !error && <View style={styles.statItem}>
                   <MaterialCommunityIcons name="school" size={28} color={Colors.primary} />
-                  <Text style={styles.statNumber}>328</Text>
+                  <Text style={styles.statNumber}>{countStudents}</Text>
                   <Text style={styles.statLabel}>الطلاب</Text>
-                </View>
+                </View>}
                 <View style={styles.statItem}>
                   <MaterialCommunityIcons name="book-open-variant" size={28} color={Colors.primary} />
                   <Text style={styles.statNumber}>{coursesCount}</Text>
