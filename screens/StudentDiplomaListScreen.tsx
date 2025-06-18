@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState } from "react"
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Image, Dimensions, Platform } from "react-native"
+import React, { useEffect, useState } from "react"
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Image, Dimensions, Platform, ActivityIndicator } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, type RouteProp } from "@react-navigation/native"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
@@ -15,179 +15,101 @@ type Props = NativeStackScreenProps<RootStackParamList, "StudentDiplomaList">
 interface Student {
   id: string
   military_number: string
-  name: string
-  promotion: string
-  fraction: string
+  full_name: string
+  promotion_id: string
+  faction: string
   birth_date: string
   age: number
   height: number
   ideal_weight: number
   nationality: string
   session:string
- 
+  photo: string | null
 }
 
-// Mock data based on the provided table
-const mockStudents: Student[] = [
+const renderStudentItem = ({ item, navigation }: { item: Student, navigation: any }) => 
   {
-    id: "105776",
-    military_number: "105776",
-    name: "مشعل عبدالله علي البلوي",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "1998-01-01",
-    age: 27,
-    height: 170,
-    ideal_weight: 80,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية",
-   
-  },
-  {
-    id: "105786",
-    military_number: "105786",
-    name: "جمعه خميس الشهواني",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "1993-01-01",
-    age: 32,
-    height: 172,
-    ideal_weight: 82,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  },
-  {
-    id: "105772",
-    military_number: "105772",
-    name: "نايف عبدالله حسين حيدر البلوشي",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "1996-01-01",
-    age: 29,
-    height: 187,
-    ideal_weight: 97,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  },
-  {
-    id: "105859",
-    military_number: "105859",
-    name: "محمد عبدالله الغريب الكواري",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "2003-01-01",
-    age: 22,
-    height: 169,
-    ideal_weight: 79,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  },
-  {
-    id: "105800",
-    military_number: "105800",
-    name: "ناصر حسين صالح حسين احمد",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "1999-01-01",
-    age: 26,
-    height: 185,
-    ideal_weight: 95,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  },
-  {
-    id: "105861",
-    military_number: "105861",
-    name: "سالمين جمعه سالمين المنصوري",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "1996-01-01",
-    age: 29,
-    height: 162,
-    ideal_weight: 72,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  },
-  {
-    id: "105746",
-    military_number: "105746",
-    name: "سالم سالم فرج سالم العنسي",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "1998-01-01",
-    age: 27,
-    height: 177,
-    ideal_weight: 87,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  },
-  {
-    id: "105840",
-    military_number: "105840",
-    name: "راشد صالح محمد الشمس الكبيسي",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "2003-01-01",
-    age: 22,
-    height: 175,
-    ideal_weight: 85,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
+    const url = "https://qatar-police-academy.starlightwebsolutions.com"
+    console.log(item)
+    return (
 
-  },
-  {
-    id: "105837",
-    military_number: "105837",
-    name: "عبدالرحمن عبدالله مهنا السبيعي",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "2003-01-01",
-    age: 22,
-    height: 169,
-    ideal_weight: 79,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  },
-  {
-    id: "105760",
-    military_number: "105760",
-    name: "فيصل عبدالله حسين سالم منصور",
-    promotion: "الدفعة الأولى",
-    fraction: "الفصيل الأول",
-    birth_date: "1997-01-01",
-    age: 28,
-    height: 173,
-    ideal_weight: 83,
-    nationality: "قطري",
-    session:"طلبة دبلوم العلوم الشرطية"
-  }
-]
+  <TouchableOpacity 
+    style={styles.studentCard}
+    onPress={() => navigation.navigate("StudentDetail", { student: item })}
+    activeOpacity={0.7}
+  >
+    <View style={styles.imageContainer}>
+      <Image 
+        source={item.photo ? { uri: `${url}${item.photo}` } : require("../assets/images/default-user.png")} 
+        style={styles.studentImage}
+        resizeMode="cover"
+      />
+    </View>
+    <Text style={styles.studentName} numberOfLines={2}>{item.full_name}</Text>
+  </TouchableOpacity>
+)}
+
+// Mock data based on the provided table
+
 
 const StudentDiplomaListScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { promotionName } = route.params
+  const { promotionName, promotionId } = route.params  
   const [searchText, setSearchText] = useState("")
+  const [students, setStudents] = useState<Student[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const filteredStudents = mockStudents.filter(student => 
-    (student.promotion === promotionName) &&
-    (student.name.includes(searchText) || student.military_number.includes(searchText))
+
+  useEffect(() => {
+    fetchStudents()
+  }, [promotionId])
+
+  
+
+  const fetchStudents = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const response = await fetch('https://qatar-police-academy.starlightwebsolutions.com/api/students')
+      if (!response.ok) {
+        throw new Error('Failed to fetch students')
+      }
+      const data = await response.json()
+      const filteredStudents = data.filter((student: any) => student.promotion_academic_year_id === promotionId)
+      setStudents(filteredStudents)
+    } catch (error) {
+      setError('Failed to load students')
+      console.error('Error fetching students:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const filteredStudents = students.filter(student => 
+    student.full_name.includes(searchText) || student.military_number.includes(searchText)
   )
 
-  const renderStudentItem = ({ item }: { item: Student }) => (
-    <TouchableOpacity 
-      style={styles.studentCard}
-      onPress={() => navigation.navigate("StudentDetail", { student: item })}
-      activeOpacity={0.7}
-    >
-      <View style={styles.imageContainer}>
-        <Image 
-          source={require("@/assets/images/trainer.png")} 
-          style={styles.studentImage}
-          resizeMode="cover"
-        />
-      </View>
-      <Text style={styles.studentName} numberOfLines={2}>{item.name}</Text>
-    </TouchableOpacity>
-  )
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title={promotionName} showBackButton />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title={promotionName} showBackButton />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      </SafeAreaView>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -209,7 +131,7 @@ const StudentDiplomaListScreen: React.FC<Props> = ({ route, navigation }) => {
 
       <FlatList
         data={filteredStudents}
-        renderItem={renderStudentItem}
+        renderItem={({item}) => renderStudentItem({item, navigation})}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
         numColumns={3}
@@ -288,6 +210,22 @@ const styles = StyleSheet.create({
     fontFamily: "Cairo-Bold",
     fontSize: 12,
     color: Colors.text,
+    textAlign: "center",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 16,
     textAlign: "center",
   },
 })

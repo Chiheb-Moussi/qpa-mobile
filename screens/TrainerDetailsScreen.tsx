@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform, ActivityIndicator } from "react-native"
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform, ActivityIndicator, Modal, Pressable } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, type RouteProp } from "@react-navigation/native"
 // @ts-ignore
@@ -27,6 +27,8 @@ const Section: React.FC<SectionProps> = ({ title, children, initiallyExpanded = 
   const animationHeight = useRef(new Animated.Value(initiallyExpanded ? 1 : 0)).current
   const fadeAnim = useRef(new Animated.Value(0)).current
   const contentRef = useRef<View>(null)
+  const [selectedCourse ,setSelectedCourse] = useState<string>("")
+  const [isCourseModalVisible, setIsCourseModalVisible] = useState(false)
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -95,7 +97,8 @@ const TrainerDetailsScreen = () => {
   const [trainerData, setTrainerData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-
+  const [selectedCourse, setSelectedCourse] = useState<string>("")
+  const [isCourseModalVisible, setIsCourseModalVisible] = useState(false)
   useEffect(() => {
     fetchTrainerData()
   }, [trainerId])
@@ -201,11 +204,19 @@ const TrainerDetailsScreen = () => {
           return evaluationResponse.json()
         })
 
+        function extractNumber(text: string) {
+          const match = text.match(/\d+/);
+          return match ? parseInt(match[0], 10) : null;
+        }
+        
         const evaluationsData = await Promise.all(evaluationPromises)
-        console.log('Raw evaluations response:', evaluationsData)
+        const sortedEvaluations = evaluationsData  ? evaluationsData.sort((a: any, b: any) => extractNumber(a.month) - extractNumber(b.month)) : []
+        console.log('Raw evaluations response:', sortedEvaluations)
+
 
         const trainerDataToSet = {
           id: data.id,
+          age: data.birthDate ? new Date().getFullYear() - new Date(data.birthDate).getFullYear() : 0,
           name: data.fullName,
           nationality: data.nationality,
           position: data.jobTitle,
@@ -235,7 +246,7 @@ const TrainerDetailsScreen = () => {
               evaluation: course.evaluation
             }
           }),
-          evaluations: evaluationsData,
+          evaluations: sortedEvaluations,
           internships: formattedInternships,
           department: data.department,
           rank: data.rank,
@@ -380,7 +391,11 @@ const TrainerDetailsScreen = () => {
                 </View>
               </View>
               <View style={styles.infoRow}>
-                <View style={[styles.infoContent, { flex: 1 }]}>
+                <View style={[styles.infoContent,{ marginRight: 20 }]}>
+                    <Text style={styles.infoValue}>{trainerData.age} </Text>
+                    <Text style={styles.infoLabel}>العمر:</Text>
+                </View>
+                <View style={[styles.infoContent]}>
                   <Text style={styles.infoValue}>{trainerData.birthDate}</Text>
                   <Text style={styles.infoLabel}>تاريخ الميلاد:</Text>
                 </View>
@@ -510,9 +525,21 @@ const TrainerDetailsScreen = () => {
                         borderBottomWidth: 1,
                         borderBottomColor: '#eee'
                       }}>
+
+                      <TouchableOpacity  
+                      onLongPress={() => {
+                        setSelectedCourse(item.course)
+                        setIsCourseModalVisible(true)
+                      }}
+                      onPressOut={() => {
+                        setIsCourseModalVisible(false)
+                      }}
+                      
+                      >
                         <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' }]} numberOfLines={1} ellipsizeMode="tail">
                           {item.course}
                         </Text>
+                        </TouchableOpacity>
                       </View>
                     ))}
                   </View>
@@ -668,6 +695,21 @@ const TrainerDetailsScreen = () => {
           </Section>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isCourseModalVisible}
+        onRequestClose={() => setIsCourseModalVisible(false)}
+      >
+        <Pressable 
+          style={styles.modalOverlay} 
+          onPress={() => setIsCourseModalVisible(false)}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{selectedCourse}</Text>
+          </View>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -976,6 +1018,31 @@ const styles = StyleSheet.create({
     color: Colors.error,
     fontFamily: "Cairo-Bold",
     fontSize: 16,
+  },
+  cellContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100%',
+    paddingVertical: 5
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    maxHeight: '80%',
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Cairo-Regular',
   },
 })
 

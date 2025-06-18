@@ -20,7 +20,8 @@ const StudentPromotionScreen: React.FC<Props> = () => {
   const fadeAnim = useRef(new Animated.Value(0)).current
   const fadeAnim1 = useRef(new Animated.Value(0)).current
   const fadeAnim2 = useRef(new Animated.Value(0)).current
-  const [loading, setLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
+  const [promotions, setPromotions] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -36,17 +37,63 @@ const StudentPromotionScreen: React.FC<Props> = () => {
         useNativeDriver: true,
       }),
     ]).start()
+    fetchPromotions()
   }, [])
+  
 
-  const promotions = [
-    { id: "1", name: "الدفعة الأولى" },
-    { id: "2", name: "الدفعة الثانية" },
-    { id: "3", name: "الدفعة الثالثة" },
-    { id: "4", name: "الدفعة الرابعة" },
-  ]
 
   const navigateToStudentList = (promotionId: string, promotionName: string) => {
     navigation.navigate("StudentDiplomaList", { promotionId, promotionName })
+  }
+
+  const fetchPromotions = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const response = await fetch('https://qatar-police-academy.starlightwebsolutions.com/api/promotion-academic-years')
+      
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error('API Error Response:', errorText)
+        throw new Error(`Failed to fetch promotions: ${response.status} ${response.statusText}`)
+      }
+
+      const contentType = response.headers.get('content-type')
+      
+
+      const data = await response.json()
+      const sortedPromotions = data.sort((a: any, b: any) => a.id - b.id)
+      console.log(sortedPromotions)
+      setPromotions(sortedPromotions)
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load promotions'
+      setError(errorMessage)
+      console.error('Error fetching promotions:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title="الدفعات" showBackButton />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      </SafeAreaView>
+    )
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Header title="الدفعات" showBackButton />
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
+      </SafeAreaView>
+    )
   }
 
   return (
@@ -95,10 +142,10 @@ const StudentPromotionScreen: React.FC<Props> = () => {
                   >
                 <TouchableOpacity
                   style={styles.promotionButton}
-                  onPress={() => navigateToStudentList(promotion.id, promotion.name)}
+                  onPress={() => navigateToStudentList(promotion.id, promotion.promotion_name)}
                   activeOpacity={0.8}
                 >
-                  <Text style={styles.promotionText}>{promotion.name}</Text>
+                  <Text style={styles.promotionText}>{promotion.promotion_name}</Text>
                   <View style={styles.arrowContainer}>
                     <Ionicons name="chevron-forward" size={24} color="white" />
                   </View>

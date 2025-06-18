@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
-import { View, Text, StyleSheet, Image, ScrollView, Dimensions ,Animated,KeyboardAvoidingView,Platform, TouchableOpacity, Modal} from "react-native"
+import { View, Text, StyleSheet, Image, ScrollView, Dimensions, Animated, KeyboardAvoidingView, Platform, TouchableOpacity, Modal, Pressable } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import type { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native"
@@ -15,9 +15,9 @@ const CARD_WIDTH = width - 32
 
 interface Test {
   name: string
-  running: string
-  pressure: string
-  stomach: string
+  running_score: string
+  push_ups: string
+  sit_ups: string
   result: string
   rating: string
 }
@@ -25,9 +25,9 @@ interface Test {
 interface Weight {
   month: string
   weight: string
-  excess: string
-  bmi: string
-  note: string
+  overweight: string
+  body_mass_index: string
+  remark: string
 }
 
 interface AcademicResult {
@@ -44,16 +44,18 @@ interface AcademicResult {
 interface Student {
   id: string
   military_number: string
-  name: string
-  promotion: string
-  fraction: string
   birth_date: string
   age: number
   height: number
   ideal_weight: number
   nationality: string
   session: string
-  tests: Test[]
+  full_name: string
+  promotion_name: string
+  faction: string
+  name: string
+  promotion: string
+  fraction: string
 }
 
 interface Violation {
@@ -64,6 +66,34 @@ interface Violation {
   violation_entry_name: string;
   promotion: string;
   period: string;
+}
+
+interface Evaluation {
+  id: number
+  student_id: number
+  academic_year_id: number
+  exam: string
+  running_score: number
+  push_ups: number
+  sit_ups: number
+  result: number
+  rating: string
+  weight: number
+  overweight: number
+  body_mass_index: number
+  remark: string
+  month: string
+  created_at: string
+  updated_at: string
+}
+
+const getRandomNumber = (min: number, max: number): string => {
+  return (Math.floor(Math.random() * (max - min + 1)) + min).toString()
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`
 }
 
 type StudentDetailScreenRouteProp = RouteProp<RootStackParamList, "StudentDetail">
@@ -115,83 +145,61 @@ interface SectionProps {
     const testsScrollRef = useRef<ScrollView>(null)
     const weightsScrollRef = useRef<ScrollView>(null)
     const [isViolationsModalVisible, setIsViolationsModalVisible] = useState(false);
+    const [evaluations, setEvaluations] = useState<Evaluation[]>([])
+    const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [selectedTest, setSelectedTest] = useState<string>("")
+    const [isTestModalVisible, setIsTestModalVisible] = useState(false)
+    
 
     useEffect(() => {
-      setTimeout(() => {
-        coursesScrollRef.current?.scrollTo({ x: 360, animated: false })
-        testsScrollRef.current?.scrollTo({ x: 1200, animated: false })
-        weightsScrollRef.current?.scrollTo({ x: 260, animated: false })
-      }, 100)
+      fetchEvaluations()
     }, [])
 
-    const { student } = route.params
-    const mockTests: Test[] = [
-      {
-        name: "تحديد مستوى فصل 1",
-        running: "13.22",
-        pressure: "50",
-        stomach: "48",
-        result: "88.4",
-        rating: "جيد جدا",
-      },
-      {
-        name: "نهاية الفترة التأسيسية",
-        running: "13.22",
-        pressure: "57",
-        stomach: "52",
-        result: "90.4",
-        rating: "ممتاز",
-      },
-    ]
-    const mockWeights: Weight[] = [
-        {
-          month: "1 شهر ",
-          weight: "80.5",
-          excess: "+(10)",
-          bmi: "26.7",
-          note: "سمنة",
-        },
-        {
-          month: "2 شهر",
-          weight: "75.8",
-          excess: "+(5)",
-          bmi: "25.7",
-          note: "وزن زائد",
-        },
-        {
-          month: "3 شهر ",
-          weight: "73.5",
-          excess: "+(2)",
-          bmi: "25.2",
-          note: "وزن زائد",
-        },
-        {
-          month: "4 شهر ",
-          weight: "70.5",
-          excess: "+(0)",
-          bmi: "24.7",
-          note: "عضلي",
-        },
-        {
-          month: "5 شهر ",
-          weight: "68.3",
-          excess: "-(3)",
-          bmi: "22.1",
-          note: "عادي",
-        },
-        {
-          month: "شهر 6",
-          weight: "60.8",
-          excess: "-(10)",
-          bmi: "17.7",
-          note: "نحيف",
-        },
-      ]
+    const fetchEvaluations = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const response = await fetch(`https://qatar-police-academy.starlightwebsolutions.com/api/evaluation-student?studentId=${route.params.student.id}`)
+        if (!response.ok) {
+          throw new Error('Failed to fetch evaluations')
+        }
+        const data = await response.json()
+        const sortedData = data.evaluations.sort((a: any, b: any) => a.id - b.id)
+        setEvaluations(sortedData)
+      } catch (error) {
+        setError('Failed to load evaluations')
+        console.error('Error fetching evaluations:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    const formatNumber = (num: number): string => {
+      return num ? num.toFixed(2) : "0.00"
+    }
+
+    const mockTests: Test[] = evaluations.map(evaluation => ({
+      name: evaluation.exam,
+      running_score: formatNumber(evaluation.running_score),
+      push_ups: formatNumber(evaluation.push_ups),
+      sit_ups: formatNumber(evaluation.sit_ups),
+      result: formatNumber(evaluation.result),
+      rating: evaluation.rating
+    }))
+
+    const mockWeights: Weight[] = evaluations.map(evaluation => ({
+      month: evaluation.month,
+      weight: formatNumber(evaluation.weight),
+      overweight: formatNumber(evaluation.overweight),
+      body_mass_index: formatNumber(evaluation.body_mass_index),
+      remark: evaluation.remark
+    }))
 
     const mockAcademicResults: AcademicResult[] = [
       {
         military_number: "105776",
-        result: "95.00",
+        result: getRandomNumber(90, 100),
         rating: "ممتاز",
         category: "أ",
         name_period: "نتيجة المقرارات الأكاديمية",
@@ -200,7 +208,7 @@ interface SectionProps {
       },
       {
         military_number: "105776",
-        result: "85.00",
+        result: getRandomNumber(80, 90),
         rating: "جيد جدا",
         category: "ب",
         name_period: "نتيجة المقرارات الأكاديمية",
@@ -209,7 +217,7 @@ interface SectionProps {
       },
       {
         military_number: "105776",
-        result: "77.00",
+        result: getRandomNumber(70, 80),
         rating: "جيد مرتفع",
         category: "ج مرتفع",
         name_period: "نتيجة المقرارات الأكاديمية",
@@ -218,7 +226,7 @@ interface SectionProps {
       },
       {
         military_number: "105776",
-        result: "62.00",
+        result: getRandomNumber(60, 70),
         rating: "مقبول",
         category: "د",
         name_period: "نتيجة المقرارات الأكاديمية",
@@ -230,7 +238,7 @@ interface SectionProps {
     const mockTrainingResults: AcademicResult[] = [
       {
         military_number: "105776",
-        result: "85.00",
+        result: getRandomNumber(80, 90),
         rating: "ممتاز",
         category: "-",
         name_period: "نتيجة البرامج التدريبية",
@@ -239,7 +247,7 @@ interface SectionProps {
       },
       {
         military_number: "105776",
-        result: "77.00",
+        result: getRandomNumber(70, 80),
         rating: "ممتاز",
         category: "-",
         name_period: "نتيجة البرامج التدريبية",
@@ -248,7 +256,7 @@ interface SectionProps {
       },
       {
         military_number: "105776",
-        result: "88.00",
+        result: getRandomNumber(80, 90),
         rating: "ممتاز",
         category: "-",
         name_period: "نتيجة البرامج التدريبية",
@@ -257,7 +265,7 @@ interface SectionProps {
       },
       {
         military_number: "105776",
-        result: "92.00",
+        result: getRandomNumber(90, 100),
         rating: "ممتاز",
         category: "-",
         name_period: "نتيجة البرامج التدريبية",
@@ -328,44 +336,44 @@ interface SectionProps {
       
               <View style={styles.imageContainer} >
                 <Image
-                  source={require("@/assets/images/trainer.png")}
+                  source={route.params.student.photo ? { uri: `https://qatar-police-academy.starlightwebsolutions.com${route.params.student.photo}` } : require("../assets/images/default-user.png")}
                   style={styles.studentImage}
                 />
-                <Text style={styles.sessionText}>{student.session}</Text>
+                <Text style={styles.sessionText}>{route.params.student.session}</Text>
               </View>
             <View style={styles.infoSection}>
                 <View style={styles.infoRow}>
                 <View style={[styles.infoContent, { flex: 1 }]}>
-                  <Text style={styles.value}>{student.name}</Text>
+                  <Text style={styles.value}>{route.params.student.full_name}</Text>
                   <Text style={styles.label}>الاسم:</Text>
                 </View>
                 </View>
                 <View style={styles.infoRow}>
                 <View style={[styles.infoContent, { flex: 1 }]}>
-                  <Text style={styles.value}>{student.nationality}</Text>
+                  <Text style={styles.value}>{route.params.student.nationality}</Text>
                   <Text style={styles.label}>الجنسية:</Text>
                 </View>
                 </View>
                 <View style={styles.infoRow}>
                 <View style={[styles.infoContent, { flex: 1 }]}>
-                  <Text style={styles.value}>{student.promotion}</Text>
+                  <Text style={styles.value}>{route.params.student.promotion_name}</Text>
                   <Text style={styles.label}>الدفعة:</Text>
                 </View>
                 </View>
                 <View style={styles.infoRow}>
                 <View style={[styles.infoContent, { flex: 1 }]}>
-                  <Text style={styles.value}>{student.fraction}</Text>
+                  <Text style={styles.value}>{route.params.student.faction}</Text>
                   <Text style={styles.label}>الفصيل:</Text>
                 </View>
                 </View>
                 <View style={styles.infoRow}>
                     <View style={[styles.infoContent,{ marginLeft: 5 }]}>
-                        <Text style={styles.value}>{student.age} </Text>
+                        <Text style={styles.value}>{route.params.student.age} </Text>
                         <Text style={styles.label}>العمر:</Text>
                     </View>
                     
                     <View style={[styles.infoContent, { flex: 1 }]}>
-                        <Text style={styles.value}>{student.birth_date}</Text>
+                        <Text style={styles.value}>{formatDate(route.params.student.birth_date)}</Text>
                         <Text style={styles.label}>تاريخ الميلاد:</Text>
                     </View>
                 </View>
@@ -374,12 +382,12 @@ interface SectionProps {
                 <View style={styles.infoRow}>
                  
                     <View style={[styles.infoContent, { flex: 1 }]}>
-                        <Text style={styles.value}>{student.ideal_weight} كغ</Text>
+                        <Text style={styles.value}>{route.params.student.ideal_weight} كغ</Text>
                         <Text style={styles.label}>الوزن المثالي:</Text>
                     </View>
                 
                     <View style={[styles.infoContent, { flex: 1 },{ width: 40  }]}>
-                        <Text style={styles.value}>{student.height} صم</Text>
+                        <Text style={styles.value}>{route.params.student.height} صم</Text>
                         <Text style={styles.label}>الطول:</Text>
                     </View>
                 </View>
@@ -425,13 +433,13 @@ interface SectionProps {
                           <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{test.result}</Text>
                         </View>
                         <View style={[styles.cellContainer, { width: 60 }]}>
-                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{test.stomach}</Text>
+                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{test.sit_ups}</Text>
                         </View>
                         <View style={[styles.cellContainer, { width: 60 }]}>
-                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{test.pressure}</Text>
+                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{test.push_ups}</Text>
                         </View>
                         <View style={[styles.cellContainer, { width: 80 }]}>
-                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{test.running}</Text>
+                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{test.running_score}</Text>
                         </View>
                       </View>
                     ))}
@@ -456,11 +464,21 @@ interface SectionProps {
                       height: 42,
                       alignItems: 'center'
                     }}>
-                      <View style={[styles.cellContainer, { flex: 1 , marginLeft:30 }]}>
-                        <Text style={[styles.cell, { color: Colors.text, textAlign: 'right', paddingHorizontal: 2 }]}>
+                      <TouchableOpacity style={[styles.cellContainer, { flex: 1 , marginLeft:30 }]} 
+                      onLongPress={() => {
+                        setSelectedTest(test.name)
+                        setIsTestModalVisible(true)
+                      }}
+                      onPressOut={() => {
+                        setIsTestModalVisible(false)
+                      }}
+                      
+                      >
+                        <Text 
+                         style={[styles.cell, { color: Colors.text, textAlign: 'right', paddingHorizontal: 2 }]} numberOfLines={1} ellipsizeMode="tail">
                           {test.name}
                         </Text>
-                      </View>
+                      </TouchableOpacity>
                     </View>
                   ))}
                 </View>
@@ -511,13 +529,13 @@ interface SectionProps {
                         alignItems: 'center'
                       }}>
                         <View style={[styles.cellContainer, { width: 60 }]}>
-                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{weight.note}</Text>
+                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{weight.remark}</Text>
                         </View>
                         <View style={[styles.cellContainer, { width: 60 }]}>
-                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{weight.bmi}</Text>
+                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{weight.body_mass_index}</Text>
                         </View>
                         <View style={[styles.cellContainer, { width: 80 }]}>
-                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{weight.excess}</Text>
+                          <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{weight.overweight}</Text>
                         </View>
                         <View style={[styles.cellContainer, { width: 60 }]}>
                           <Text style={[styles.cell, { color: Colors.text, textAlign: 'center' }]}>{weight.weight}</Text>
@@ -780,15 +798,15 @@ interface SectionProps {
     paddingHorizontal: 12,
     paddingVertical: 4,
   }}>
-                <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>75%</Text></View>
-<Text style={styles.gradeLabel}>المعدل</Text></View>
+    <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(70, 90)}%</Text></View>
+              <Text style={styles.gradeLabel}>المعدل</Text></View>
                 <View style={styles.gradeRow}>
                 <View style={{
-    backgroundColor: '#007bff',
-    borderRadius: 16,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-  }}>
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
                 <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>جيد</Text></View>
 <Text style={styles.gradeLabel}>التقدير</Text>
                   
@@ -800,7 +818,7 @@ interface SectionProps {
     paddingHorizontal: 12,
     paddingVertical: 4,
   }}>
-     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>5</Text>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(1, 10)}</Text>
                 </View>
                   <Text style={styles.gradeLabel}>الترتيب العام</Text>
                   
@@ -821,6 +839,21 @@ interface SectionProps {
       </KeyboardAvoidingView>
 
      
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isTestModalVisible}
+        onRequestClose={() => setIsTestModalVisible(false)}
+      >
+        <Pressable 
+          style={styles.modalOverlay} 
+          onPress={() => setIsTestModalVisible(false)}
+        >
+          <View style={styles.modalContentTitle}>
+            <Text style={styles.modalText}>{selectedTest}</Text>
+          </View>
+        </Pressable>
+      </Modal>
 
       {/* Violations Modal */}
       <Modal
@@ -1233,6 +1266,14 @@ const styles = StyleSheet.create({
     maxHeight: '80%',
     elevation: 5,
   },
+  modalContentTitle: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    maxHeight: '80%',
+    alignItems: 'center',
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1260,6 +1301,19 @@ const styles = StyleSheet.create({
   violationsList: {
     padding: 16,
   },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Cairo-Regular',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  
  
 })
 
