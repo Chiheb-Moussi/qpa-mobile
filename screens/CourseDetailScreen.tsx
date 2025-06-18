@@ -31,11 +31,11 @@ const CourseDetailScreen = () => {
             <View style={styles.dateContainer}>
               <View style={styles.dateColumn}>
                 <Text style={styles.dateLabel}>نهاية التاريخ البديل</Text>
-                <Text style={styles.dateValue}>{course.alternativeStartDate}</Text>
+                <Text style={styles.dateValue}>{course.alternativeEndDate}</Text>
               </View>
               <View style={styles.dateColumn}>
                 <Text style={styles.dateLabel}>بداية التاريخ البديل</Text>
-                <Text style={styles.dateValue}>{course.alternativeEndDate}</Text>
+                <Text style={styles.dateValue}>{course.alternativeStartDate}</Text>
               </View>
             </View>
           </View>

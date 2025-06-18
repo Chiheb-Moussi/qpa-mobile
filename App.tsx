@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from "react"
 import Colors from "./constants/Colors"
 
 // Force RTL layout
-if (Platform.OS === 'ios') {
+/*if (Platform.OS === 'ios') {
   I18nManager.allowRTL(true)
   I18nManager.forceRTL(true)
   I18nManager.swapLeftAndRightInRTL(true)
@@ -30,7 +30,7 @@ if (Platform.OS === 'ios') {
 // Empêcher la fermeture automatique du SplashScreen
 SplashScreen.preventAutoHideAsync().catch(() => {
   /* ignore error */
-})
+  //})
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false)

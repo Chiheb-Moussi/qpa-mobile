@@ -108,7 +108,7 @@ const Header: React.FC<HeaderProps> = ({ title, showBackButton = false, showProf
           <View style={styles.modalOverlay}>
             <View style={[
               styles.dropdownContainer,
-              { right: isRTL ? 16 : undefined, left: isRTL ? undefined : 16 }
+              { left: isRTL ? 16 : undefined, right: isRTL ? undefined : 16 }
             ]}>
               <TouchableOpacity 
                 style={styles.dropdownItem}
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   dropdownContainer: {
-    position: 'absolute',
+   
     top: 60,
     backgroundColor: 'white',
     borderRadius: 8,
@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     minWidth: 150,
+    position:'absolute',
   },
   dropdownItem: {
     flexDirection: 'row',

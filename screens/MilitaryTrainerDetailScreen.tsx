@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Animated, KeyboardAvoidingView, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useRoute, useNavigation, type RouteProp } from "@react-navigation/native"
@@ -58,6 +58,18 @@ const MilitaryTrainerDetailScreen = () => {
   const route = useRoute<MilitaryTrainerDetailScreenRouteProp>()
   const navigation = useNavigation()
   const { trainerId } = route.params
+  const coursesScrollRef = useRef<ScrollView>(null)
+  const testsScrollRef = useRef<ScrollView>(null)
+  const weightsScrollRef = useRef<ScrollView>(null)
+
+  useEffect(() => {
+    // Définir la position initiale des scrolls après le rendu
+    setTimeout(() => {
+      coursesScrollRef.current?.scrollTo({ x: 360, animated: false })  // Pour montrer تاريخ الدورة
+      testsScrollRef.current?.scrollTo({ x: 1200, animated: false })   // Augmenté pour montrer الجري en premier
+      weightsScrollRef.current?.scrollTo({ x: 260, animated: false })  // Pour montrer الوزن
+    }, 100)
+  }, [])
 
   // Mock data for the military trainer
   const trainerData = {
@@ -236,11 +248,13 @@ const MilitaryTrainerDetailScreen = () => {
                 </View>
               </View>
               <View style={styles.infoRow}>
-                <View style={[styles.infoContent, { marginRight: 20 }]}>
+                <View style={[styles.infoContent,{flex:1}]}>
                   <Text style={styles.infoValue}>{trainerData.weight}</Text>
                   <Text style={styles.infoLabel}>الوزن:</Text>
                 </View>
-                <View style={styles.infoContent}>
+                </View>
+                <View style={styles.infoRow}>
+                <View style={[styles.infoContent, { flex: 1 }]}>
                   <Text style={styles.infoValue}>{trainerData.height}</Text>
                   <Text style={styles.infoLabel}>الطول:</Text>
                 </View>
@@ -249,17 +263,22 @@ const MilitaryTrainerDetailScreen = () => {
           </Animated.View>
 
           <Section title="الدورات" initiallyExpanded={true}>
-            <View style={{ padding: 16 }}>
+            <View style={{ padding: 1}}>
               <View style={{ flexDirection: 'row' }}>
                 {/* Scrollable Columns */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                <ScrollView 
+                  ref={coursesScrollRef}
+                  horizontal 
+                  showsHorizontalScrollIndicator={true}
+                  contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                >
                   <View>
                     {/* Header */}
                     <View style={{ 
                       flexDirection: 'row', 
                       borderTopLeftRadius: 8, 
                       borderBottomLeftRadius: 8,
-                      paddingVertical: 8
+                      paddingVertical:8
                     }}>
                       <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>الرتبة</Text>
                       <Text style={[styles.headerCell, { width: 60, textAlign: 'center' }]}>النتيجة</Text>
@@ -273,7 +292,8 @@ const MilitaryTrainerDetailScreen = () => {
                         backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
                         paddingVertical: 8,
                         borderBottomWidth: 1,
-                        borderBottomColor: '#eee'
+                        borderBottomColor: '#eee',
+                        height:35
                       }}>
                         <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{course.rating}</Text>
                         <Text style={[styles.cell, { width: 60, color: Colors.text, textAlign: 'center' }]}>{course.result}</Text>
@@ -291,7 +311,7 @@ const MilitaryTrainerDetailScreen = () => {
                   borderBottomRightRadius: 8,
                   zIndex: 1
                 }}>
-                  <View style={{ paddingVertical: 8 }}>
+                  <View style={{ paddingVertical: 8}}>
                     <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>اسم الدورة</Text>
                   </View>
                   {trainerData.courses.map((course, idx) => (
@@ -299,7 +319,8 @@ const MilitaryTrainerDetailScreen = () => {
                       backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
                       paddingVertical: 8,
                       borderBottomWidth: 1,
-                      borderBottomColor: '#eee'
+                      borderBottomColor: '#eee',
+                      height:35
                     }}>
                       <Text style={[styles.cell, { color: Colors.text, textAlign: 'right' ,paddingRight:10}]}>
                         {course.name}
@@ -312,10 +333,15 @@ const MilitaryTrainerDetailScreen = () => {
           </Section>
 
           <Section title="الإختبارات">
-            <View style={{ padding: 16 }}>
+            <View style={{ padding: 1 }}>
               <View style={{ flexDirection: 'row' }}>
-                {/* Scrollable Columns */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                {/* Scrollable Columns for الإختبارات */}
+                <ScrollView 
+                  ref={testsScrollRef}
+                  horizontal 
+                  showsHorizontalScrollIndicator={true}
+                  contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                >
                   <View>
                     {/* Header */}
                     <View style={{ 
@@ -393,10 +419,15 @@ const MilitaryTrainerDetailScreen = () => {
           </Section>
 
           <Section title="الوزن الشهري">
-            <View style={{ padding: 16 }}>
+            <View style={{ padding: 1 }}>
               <View style={{ flexDirection: 'row' }}>
-                {/* Scrollable Columns */}
-                <ScrollView horizontal showsHorizontalScrollIndicator={true}>
+                {/* Scrollable Columns for الوزن الشهري */}
+                <ScrollView 
+                  ref={weightsScrollRef}
+                  horizontal 
+                  showsHorizontalScrollIndicator={true}
+                  contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                >
                   <View>
                     {/* Header */}
                     <View style={{ 
@@ -454,13 +485,17 @@ const MilitaryTrainerDetailScreen = () => {
                   borderBottomRightRadius: 8,
                   zIndex: 1
                 }}>
-                  <View style={{ 
-                    height: 50,
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right', marginLeft:70 }]}>الشهر</Text>
-                  </View>
+                                <View style={{ 
+                  height: 50,
+                  width: '100%', // S'assurer que le View prend toute la largeur
+                  alignItems: 'flex-end', // Aligner les enfants à droite horizontalement
+                  justifyContent: 'center', // Centrer verticalement
+                  paddingRight: 10 // Un petit espace à droite
+                }}>
+                  <Text style={[styles.headerCell, { color: Colors.primary, textAlign: 'right' }]}>
+                    الشهر
+                  </Text>
+                </View>
                   {trainerData.weights.map((weight, idx) => (
                     <View key={idx} style={{ 
                       backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',

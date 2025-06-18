@@ -1,7 +1,7 @@
 "use client"
 
-import { useRef, useEffect } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated, ActivityIndicator } from "react-native"
+import { useRef, useEffect, useState } from "react"
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated, ActivityIndicator, Modal, Pressable, Platform } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { useNavigation } from "@react-navigation/native"
 import type { StackNavigationProp } from "@react-navigation/stack"
@@ -16,7 +16,10 @@ type CoursesScreenNavigationProp = StackNavigationProp<RootStackParamList, "Cour
 const CoursesScreen = () => {
   const navigation = useNavigation<CoursesScreenNavigationProp>()
   const fadeAnim = useRef(new Animated.Value(0)).current
+  const scrollViewRef = useRef<ScrollView>(null)
   const { courses, isLoading, error } = useCourses()
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null)
+  const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -24,6 +27,11 @@ const CoursesScreen = () => {
       duration: 1000,
       useNativeDriver: true,
     }).start()
+
+    // Définir la position initiale du scroll après le rendu
+    setTimeout(() => {
+      scrollViewRef.current?.scrollTo({ x: 360, animated: false })
+    }, 100)
   }, [fadeAnim])
 
   const handleCoursePress = (course: any) => {
@@ -69,7 +77,12 @@ const CoursesScreen = () => {
 
             <View style={styles.tableContainer}>
               {/* Colonnes scrollables */}
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <ScrollView 
+                ref={scrollViewRef}
+                horizontal 
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ flexDirection: 'row-reverse' }}
+              >
                 <View>
                   <View style={styles.tableHeader}>
                     <Text style={styles.headerCell}>برنامج الدورة</Text>
@@ -83,6 +96,10 @@ const CoursesScreen = () => {
                       key={course.id}
                       style={[styles.tableRow, index % 2 === 0 ? styles.evenRow : {}]}
                       onPress={() => handleCoursePress(course)}
+                      onLongPress={() => {
+                        setSelectedCourse(course.name)
+                        setModalVisible(true)
+                      }}
                     >
                       <Text style={styles.cell}>{course.program}</Text>
                       <Text style={styles.cell}>{course.duration}</Text>
@@ -100,6 +117,13 @@ const CoursesScreen = () => {
                     key={course.id}
                     style={[styles.fixedCell, index % 2 === 0 ? styles.evenRow : {}]}
                     onPress={() => handleCoursePress(course)}
+                    onLongPress={() => {
+                      setSelectedCourse(course.name)
+                      setModalVisible(true)
+                    }}
+                    onPressOut={() => {
+                      setModalVisible(false)
+                    }}
                   >
                     <Text style={styles.cell} numberOfLines={1} ellipsizeMode="tail">
                       {course.name}
@@ -112,6 +136,21 @@ const CoursesScreen = () => {
         </Animated.View>
       </ScrollView>
 
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <Pressable 
+          style={styles.modalOverlay} 
+          onPress={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{selectedCourse}</Text>
+          </View>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   )
 }
@@ -232,6 +271,31 @@ const styles = StyleSheet.create({
   },
   statusCell: {
     fontFamily: "Cairo-Bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    maxWidth: '80%',
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    fontFamily: Platform.OS === 'ios' ? 'System' : 'Cairo-Regular',
   },
 })
 

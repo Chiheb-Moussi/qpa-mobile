@@ -12,8 +12,8 @@ import Colors from "../constants/Colors"
 import { Fonts } from "../constants/Fonts"
 
 // Force RTL layout
-I18nManager.allowRTL(true)
-I18nManager.forceRTL(true)
+I18nManager.allowRTL(false)
+I18nManager.forceRTL(false)
 
 type TrainersListScreenNavigationProp = StackNavigationProp<RootStackParamList, "TrainersList">
 type MilitaryTrainersListScreenNavigationProp = StackNavigationProp<RootStackParamList, "MilitaryTrainersList">
@@ -159,9 +159,10 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
   const filteredTrainers = trainers
 
   const navigateToTrainerDetails = (trainerId: string) => {
+    console.log(trainerId)
     if (trainerTypeCode === "military_shows") {
         navigation.navigate("MilitaryTrainerDetail", { trainerId })
-    } else {
+    } else  {
         navigation.navigate("TrainerDetails", { trainerId })
     }
   }
@@ -186,7 +187,7 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
                   placeholderTextColor="#999"
                   textAlign="right"
                 />
-                <Ionicons name="search" size={15} color="#999" style={styles.searchIcon} />
+                <Ionicons name="search" size={15} color="#999" />
               </View>
             </View>
             <View style={styles.loadingContainer}>
@@ -206,7 +207,7 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
                   placeholderTextColor="#999"
                   textAlign="right"
                 />
-                <Ionicons name="search" size={15} color="#999" style={styles.searchIcon} />
+                <Ionicons name="search" size={15} color="#999"  />
               </View>
             </View>
             <View style={styles.loadingContainer}>
@@ -235,7 +236,7 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
                   placeholderTextColor="#999"
                   textAlign="right"
                 />
-                <Ionicons name="search" size={15} color="#999" style={styles.searchIcon} />
+                <Ionicons name="search" size={15} color="#999"  />
               </View>
             </View>
             <View style={styles.errorContainer}>
@@ -254,7 +255,7 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
                   placeholderTextColor="#999"
                   textAlign="right"
                 />
-                <Ionicons name="search" size={15} color="#999" style={styles.searchIcon} />
+                <Ionicons name="search" size={15} color="#999" />
               </View>
             </View>
             <View style={styles.errorContainer}>
@@ -281,7 +282,7 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
                 placeholderTextColor="#999"
                 textAlign="right"
               />
-              <Ionicons name="search" size={15} color="#999" style={styles.searchIcon} />
+              <Ionicons name="search" size={15} color="#999" />
             </View>
           </View>
 
@@ -315,7 +316,7 @@ const TrainersList = ({ trainerTypeCode, trainerTypeName }: { trainerTypeCode: s
                 placeholderTextColor="#999"
                 textAlign="right"
               />
-              <Ionicons name="search" size={15} color="#999" style={styles.searchIcon} />
+              <Ionicons name="search" size={15} color="#999"  />
             </View>
           </View>
 
@@ -353,7 +354,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 6,
     alignItems: "center",
-    height: 50,
+    
   },
   searchInputContainer: {
     flex: 1,
@@ -364,16 +365,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "#eee",
+    paddingVertical: 6,
   },
   searchInput: {
     flex: 1,
     fontFamily: Platform.OS === 'ios' ? 'System' : 'Cairo-Regular',
     textAlign: "right",
-    paddingHorizontal: 10,
+   
   },
-  searchIcon: {
-    marginLeft: 10,
-  },
+
   filterButton: {
     marginLeft: 10,
     padding: 10,
