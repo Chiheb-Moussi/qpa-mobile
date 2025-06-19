@@ -182,8 +182,8 @@ interface SectionProps {
     const mockTests: Test[] = evaluations.map(evaluation => ({
       name: evaluation.exam,
       running_score: formatNumber(evaluation.running_score),
-      push_ups: formatNumber(evaluation.push_ups),
-      sit_ups: formatNumber(evaluation.sit_ups),
+      push_ups: evaluation.push_ups,
+      sit_ups: evaluation.sit_ups,
       result: formatNumber(evaluation.result),
       rating: evaluation.rating
     }))
@@ -288,15 +288,6 @@ interface SectionProps {
         military_number: "105776",
         violation: "عدم المبالاة",
         repetition: "2",
-        date_of_violation: "",
-        violation_entry_name: "",
-        promotion: "الدفعة الأولى",
-        period: "الفصل الأول"
-      },
-      {
-        military_number: "105776",
-        violation: "عدم الإعتناء بالمظهر أو الهندام",
-        repetition: "1",
         date_of_violation: "",
         violation_entry_name: "",
         promotion: "الدفعة الأولى",
@@ -805,6 +796,1146 @@ interface SectionProps {
     paddingHorizontal: 12,
     paddingVertical: 4,
   }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>السلوك</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+
+<Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>المواظبة</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                
+    <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(70, 90)}%</Text></View>
+              <Text style={styles.gradeLabel}>المعدل</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>جيد</Text></View>
+<Text style={styles.gradeLabel}>التقدير</Text>
+                  
+                </View>
+                <View style={styles.gradeRow}>
+                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(1, 10)}</Text>
+                </View>
+                  <Text style={styles.gradeLabel}>الترتيب العام</Text>
+                  
+                </View>
+              </View>
+            </View>
+             {/* Violations Button */}
+      <View style={styles.violationsButtonContainer}>
+        <TouchableOpacity
+          style={styles.violationsButton}
+          onPress={() => setIsViolationsModalVisible(true)}
+        >
+          <Text style={styles.violationsButtonText}>المخالفات</Text>
+        </TouchableOpacity>
+      </View>
+          </Section>
+          <Section title="الفصل الأول">
+            <View style={{ padding: 1 }}>
+              {/* Academic Results */}
+              <View style={styles.subSection}>
+                <Text style={styles.subSectionTitle}>نتيجة المقرارات الأكاديمية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                        <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                      <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                        
+                       
+                        
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockAcademicResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category || '-'}</Text>
+                          </View>
+                             <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                            <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                       
+                         
+                      
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockAcademicResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Training Results */}
+              <View style={[styles.subSection, { marginTop: 20 }]}>
+                <Text style={styles.subSectionTitle}>نتيجة البرامج التدريبية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                      
+                       
+                       
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockTrainingResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category}</Text>
+                          </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                           <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                          
+                         
+                       
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockTrainingResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Final Grade */}
+              <View style={{
+                  marginTop: 16,
+                  padding: 12,
+                  backgroundColor: '#e6f0ff',
+                  borderRadius: 8,
+                  flexDirection: 'column',
+                  gap: 8
+                }}>
+
+                   <View style={styles.gradeRow}>
+                                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>السلوك</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+
+<Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>المواظبة</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                
+    <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(70, 90)}%</Text></View>
+              <Text style={styles.gradeLabel}>المعدل</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>جيد</Text></View>
+<Text style={styles.gradeLabel}>التقدير</Text>
+                  
+                </View>
+                <View style={styles.gradeRow}>
+                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(1, 10)}</Text>
+                </View>
+                  <Text style={styles.gradeLabel}>الترتيب العام</Text>
+                  
+                </View>
+              </View>
+            </View>
+             {/* Violations Button */}
+      <View style={styles.violationsButtonContainer}>
+        <TouchableOpacity
+          style={styles.violationsButton}
+          onPress={() => setIsViolationsModalVisible(true)}
+        >
+          <Text style={styles.violationsButtonText}>المخالفات</Text>
+        </TouchableOpacity>
+      </View>
+          </Section>
+          <Section title="الفصل الثاني ">
+            <View style={{ padding: 1 }}>
+              {/* Academic Results */}
+              <View style={styles.subSection}>
+                <Text style={styles.subSectionTitle}>نتيجة المقرارات الأكاديمية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                        <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                      <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                        
+                       
+                        
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockAcademicResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category || '-'}</Text>
+                          </View>
+                             <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                            <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                       
+                         
+                      
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockAcademicResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Training Results */}
+              <View style={[styles.subSection, { marginTop: 20 }]}>
+                <Text style={styles.subSectionTitle}>نتيجة البرامج التدريبية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                      
+                       
+                       
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockTrainingResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category}</Text>
+                          </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                           <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                          
+                         
+                       
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockTrainingResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Final Grade */}
+              <View style={{
+                  marginTop: 16,
+                  padding: 12,
+                  backgroundColor: '#e6f0ff',
+                  borderRadius: 8,
+                  flexDirection: 'column',
+                  gap: 8
+                }}>
+
+                   <View style={styles.gradeRow}>
+                                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>السلوك</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+
+<Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>المواظبة</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                
+    <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(70, 90)}%</Text></View>
+              <Text style={styles.gradeLabel}>المعدل</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>جيد</Text></View>
+<Text style={styles.gradeLabel}>التقدير</Text>
+                  
+                </View>
+                <View style={styles.gradeRow}>
+                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(1, 10)}</Text>
+                </View>
+                  <Text style={styles.gradeLabel}>الترتيب العام</Text>
+                  
+                </View>
+              </View>
+            </View>
+             {/* Violations Button */}
+      <View style={styles.violationsButtonContainer}>
+        <TouchableOpacity
+          style={styles.violationsButton}
+          onPress={() => setIsViolationsModalVisible(true)}
+        >
+          <Text style={styles.violationsButtonText}>المخالفات</Text>
+        </TouchableOpacity>
+      </View>
+          </Section>
+          <Section title="الفصل الثالث ">
+            <View style={{ padding: 1 }}>
+              {/* Academic Results */}
+              <View style={styles.subSection}>
+                <Text style={styles.subSectionTitle}>نتيجة المقرارات الأكاديمية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                        <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                      <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                        
+                       
+                        
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockAcademicResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category || '-'}</Text>
+                          </View>
+                             <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                            <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                       
+                         
+                      
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockAcademicResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Training Results */}
+              <View style={[styles.subSection, { marginTop: 20 }]}>
+                <Text style={styles.subSectionTitle}>نتيجة البرامج التدريبية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                      
+                       
+                       
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockTrainingResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category}</Text>
+                          </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                           <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                          
+                         
+                       
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockTrainingResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Final Grade */}
+              <View style={{
+                  marginTop: 16,
+                  padding: 12,
+                  backgroundColor: '#e6f0ff',
+                  borderRadius: 8,
+                  flexDirection: 'column',
+                  gap: 8
+                }}>
+
+                   <View style={styles.gradeRow}>
+                                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>السلوك</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+
+<Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>المواظبة</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                
+    <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(70, 90)}%</Text></View>
+              <Text style={styles.gradeLabel}>المعدل</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>جيد</Text></View>
+<Text style={styles.gradeLabel}>التقدير</Text>
+                  
+                </View>
+                <View style={styles.gradeRow}>
+                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(1, 10)}</Text>
+                </View>
+                  <Text style={styles.gradeLabel}>الترتيب العام</Text>
+                  
+                </View>
+              </View>
+            </View>
+             {/* Violations Button */}
+      <View style={styles.violationsButtonContainer}>
+        <TouchableOpacity
+          style={styles.violationsButton}
+          onPress={() => setIsViolationsModalVisible(true)}
+        >
+          <Text style={styles.violationsButtonText}>المخالفات</Text>
+        </TouchableOpacity>
+      </View>
+          </Section>
+          <Section title="الفصل الرابع ">
+            <View style={{ padding: 1 }}>
+              {/* Academic Results */}
+              <View style={styles.subSection}>
+                <Text style={styles.subSectionTitle}>نتيجة المقرارات الأكاديمية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                        <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                      <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                        
+                       
+                        
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockAcademicResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category || '-'}</Text>
+                          </View>
+                             <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                            <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                       
+                         
+                      
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockAcademicResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Training Results */}
+              <View style={[styles.subSection, { marginTop: 20 }]}>
+                <Text style={styles.subSectionTitle}>نتيجة البرامج التدريبية</Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={true}
+                    contentContainerStyle={{ flexDirection: 'row-reverse' }}
+                  >
+                    <View>
+                      {/* Headers Row */}
+                      <View style={{ 
+                        flexDirection: 'row', 
+                        borderTopLeftRadius: 8, 
+                        borderBottomLeftRadius: 8,
+                        paddingVertical: 8,
+                        height: 50,
+                        alignItems: 'center',
+                        backgroundColor: '#fff'
+                      }}>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>الفئة</Text>
+                        </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>التقدير</Text>
+                        </View>
+                       <View style={[styles.cellContainer, { width: 60 }]}>
+                          <Text style={[styles.headerCell, { color: Colors.primary, textDecorationLine: 'underline' }]}>النتيجة</Text>
+                        </View>
+                      
+                       
+                       
+                      </View>
+
+                      {/* Data Rows */}
+                      {mockTrainingResults.map((result, idx) => (
+                        <View key={idx} style={{ 
+                          flexDirection: 'row',
+                          backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                          paddingVertical: 8,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#eee',
+                          height: 42,
+                          alignItems: 'center'
+                        }}>
+                         <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.category}</Text>
+                          </View>
+                          <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.rating}</Text>
+                          </View>
+                           <View style={[styles.cellContainer, { width: 60 }]}>
+                            <Text style={[styles.cell, { color: Colors.text }]}>{result.result}</Text>
+                          </View>
+                          
+                         
+                       
+                        </View>
+                      ))}
+                    </View>
+                  </ScrollView>
+
+                  {/* Fixed Subject Column */}
+                  <View style={{ 
+                    width: 150,
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    zIndex: 1
+                  }}>
+                    <View style={{ 
+                      paddingVertical: 8,
+                      height: 50,
+                      justifyContent: 'center',
+                      backgroundColor: '#fff'
+                    }}>
+                      <Text style={[styles.headerCell, { 
+                        color: Colors.primary, 
+                        textAlign: 'right',
+                        paddingRight: 10,
+                        textDecorationLine: 'underline'
+                      }]}>المادة</Text>
+                    </View>
+                    {mockTrainingResults.map((result, idx) => (
+                      <View key={idx} style={{ 
+                        backgroundColor: idx % 2 === 0 ? '#f7f7f7' : 'white',
+                        paddingVertical: 8,
+                        borderBottomWidth: 1,
+                        borderBottomColor: '#eee',
+                        height: 42,
+                        justifyContent: 'center'
+                      }}>
+                        <Text style={[styles.cell, { 
+                          color: Colors.text,
+                          textAlign: 'right',
+                          paddingRight: 10
+                        }]}>{result.subject_material}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* Final Grade */}
+              <View style={{
+                  marginTop: 16,
+                  padding: 12,
+                  backgroundColor: '#e6f0ff',
+                  borderRadius: 8,
+                  flexDirection: 'column',
+                  gap: 8
+                }}>
+
+                   <View style={styles.gradeRow}>
+                                <View style={{
+    backgroundColor: '#007bff',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+  }}>
+     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>السلوك</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+
+<Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(80, 100)}</Text></View>
+              <Text style={styles.gradeLabel}>المواظبة</Text></View>
+                <View style={styles.gradeRow}>
+                <View style={{
+                  backgroundColor: '#007bff',
+                  borderRadius: 16,
+                  paddingHorizontal: 12,
+                  paddingVertical: 4,
+                }}>
+                
     <Text style={{ color: 'white', fontWeight: 'bold' ,width:40,textAlign:'center'}}>{getRandomNumber(70, 90)}%</Text></View>
               <Text style={styles.gradeLabel}>المعدل</Text></View>
                 <View style={styles.gradeRow}>

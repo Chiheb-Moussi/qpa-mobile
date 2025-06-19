@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.policeqatar.app",
@@ -46,6 +48,11 @@
         }
       ]
     ],
-    "sdkVersion": "53.0.0"
+    "sdkVersion": "53.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "21dab249-5bef-467b-b2a4-7f00b12d9364"
+      }
+    }
   }
 }
